@@ -1,8 +1,8 @@
 ---
 title: "Project Proposal"
 subtitle: "due October 11, 2021 by 11:59 PM "
-author: "Your names and team name here"
-date: ""
+author: ""
+date: "10/11/2021"
 output: pdf_document
 ---
 
@@ -14,17 +14,20 @@ library(tidyverse)
 
 # Load Data
 ```{r load-data, message = F}
+#oxford_lockdown<-read.csv('R/TBD2/data/OxCGRT_US_latest.csv')
 ```
 
 # Introduction and Data, including Research Questions
 
-(The introduction should introduce your general research question and your data (where it came from, how it was collected, what are the cases, what are the variables, etc.). Your research questions should be clearly specified. The motivation for your research question should be clear, with citations to relevant literature as appropriate.)
+How have the coronavirus and corresponding prevention measures affected the spread of other infectious diseases in the United States? Our first dataset is from the Blavatnik School of Government at Oxford, which collects its information via volunteers monitoring policy announcements. Its variables are different types of COVID prevention measures (banning public gatherings, mask mandates, etc.) and the observations measure the severity of each policy and whether or not they are in place. Each variable is measured for each state and day from January 01, 2020 to today (10/11). This dataset will help us to compare the prevention measures against COVID to levels of infectious diseases from other datasets, which will allow us to see if these preventions affected other infectious diseases. This could help us to understand how to allocate resources in the future, and if we should expect infectious disease deaths to be reduced due to effective measures, which would mean that estimating COVID from excess deaths based on previous years would be an underestimation.
 
 # Glimpse
 
-(Please use `glimpse` for your data, uploaded into the data folder, here.)
+```{r}
+#glimpse(oxford_lockdown)
+```
+
 
 # Data Analysis Plan
 
-(Specify the outcome (response, Y) and predictor (explanatory, X) variables you will use to answer your question, as well as the comparison groups you will use, if applicable. You may include very preliminary exploratory data analysis, including some summary statistics and visualizations, along with some explanation on how they help you learn more about your data. Note the statistical method(s) that you believe will be useful in answering your question(s). 
-What results from these specific statistical methods are needed to support your hypothesized answer?)
+The outcome variable is the deaths due to non-COVID-19 infectious diseases over the given time period, which will be compared based on the different policies of different states. The predictor will be the stringency index of prevention measures of different states, a variable generated from combination of different policies by the Oxford dataset. Statistical methods that may prove useful in answering our question are generating a ratio of mean or total stringency to ID death rates for each state and finding a correlation, creating line graphs comparing stringency and deaths for several states, or creating a graph showing lines for each state over time of the ratio between deaths and stringency for each day or week. Data that would support our hypothesis that prevention measures suppress other infectious diseases as well would show an correlation between higher stringency and lower deaths, which could be found by comparing different states and different times.
