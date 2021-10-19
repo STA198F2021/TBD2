@@ -10,11 +10,13 @@ output: pdf_document
 
 ```{r load-packages, message = FALSE, warning = FALSE}
 library(tidyverse) 
+library(data.table)
 ``` 
 
 # Load Data
 ```{r load-data, message = F}
 oxford_lockdown<-read.csv(file = '~/R/TBD2/data/OxCGRT_US_latest.csv')
+flu<-read.csv(file = '~/R/TBD2/data/State_Custom_Data_Influenza.csv')
 ```
 
 # Introduction and Data, including Research Questions
@@ -23,12 +25,26 @@ How have the coronavirus and corresponding prevention measures affected the spre
 
 # Glimpse
 
-```{r}
+```{r glimpse}
 glimpse(oxford_lockdown)
+glimpse(flu)
 ```
 
 
 # Data Analysis Plan
 
-The outcome variable is the deaths due to non-COVID-19 infectious diseases over the given time period, which will be compared based on the different policies of different states. The predictor will be the stringency index of prevention measures of different states, a variable generated from combination of different policies by the Oxford dataset. Statistical methods that may prove useful in answering our question are generating a ratio of mean or total stringency to ID death rates for each state and finding a correlation, creating line graphs comparing stringency and deaths for several states, or creating a graph showing lines for each state over time of the ratio between deaths and stringency for each day or week. Data that would support our hypothesis that prevention measures suppress other infectious diseases as well would show an correlation between higher stringency and lower deaths, which could be found by comparing different states and different times. Currently, we are identifying which infectious diseases have the best datasets available for the US 2020-2021. It may be necessary to move from analyzing the US on a state basis to comparing countries on a global scale in order to gain workable data for infectious diseases.
+The outcome variable is the deaths due to non-COVID-19 infectious diseases over the given time period, which will be compared based on the different policies of different states. The predictor will be the stringency index of prevention measures of different states, a variable generated from combination of different policies by the Oxford dataset. Statistical methods that may prove useful in answering our question are generating a ratio of mean or total stringency to ID death rates for each state and finding a correlation, creating line graphs comparing stringency and deaths for several states, or creating a graph showing lines for each state over time of the ratio between deaths and stringency for each day or week. Data that would support our hypothesis that prevention measures suppress other infectious diseases as well would show an correlation between higher stringency and lower deaths, which could be found by comparing different states and different times. Currently, we are comparing stringency to flu deaths for each week and state where data is available. More work is needed to make the data more readable.
+```{r initialvis}
+flu<-flu%>%
+  transform(RegionName = SUB.AREA)%>%
+  mutate(year = ifelse('season' == 2021-2022, 2021, ifelse('season' == 2020-2021, 2020, 2019)))%>%
+  transform(yearweek = as.numeric(paste(year, 'week', sep = "")))
+oxford_lockdown<-oxford_lockdown%>%
+  mutate(year = year(as.numeric('Date')), week = week(as.numeric('Date')))%>%
+  mutate(yearweek = as.numeric(paste('year', 'week', sep = "")))
+combdat<-left_join(oxford_lockdown, flu, by = 'RegionName','yearweek')
+combdat%>%
+  ggplot(aes(x = StringencyIndex, y = NUM.INFLUENZA.DEATHS)) +
+  geom_point()
+```
 
