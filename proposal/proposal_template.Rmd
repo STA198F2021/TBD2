@@ -33,7 +33,7 @@ glimpse(flu)
 
 # Data Analysis Plan
 
-The outcome variable is the deaths due to non-COVID-19 infectious diseases over the given time period, which will be compared based on the different policies of different states. The predictor will be the stringency index of prevention measures of different states, a variable generated from combination of different policies by the Oxford dataset. Statistical methods that may prove useful in answering our question are generating a ratio of mean or total stringency to ID death rates for each state and finding a correlation, creating line graphs comparing stringency and deaths for several states, or creating a graph showing lines for each state over time of the ratio between deaths and stringency for each day or week. Data that would support our hypothesis that prevention measures suppress other infectious diseases as well would show an correlation between higher stringency and lower deaths, which could be found by comparing different states and different times. Currently, we are comparing stringency to flu deaths for each week and state where data is available. More work is needed to make the data more readable.
+The outcome variable is the deaths due to non-COVID-19 infectious diseases over the given time period, which will be compared based on the different policies of different states. The predictor will be the stringency index of prevention measures of different states, a variable generated from combination of different policies by the Oxford dataset. Statistical methods that may prove useful in answering our question are generating a ratio of mean or total stringency to ID death rates for each state and finding a correlation, creating line graphs comparing stringency and deaths for several states, or creating a graph showing lines for each state over time of the ratio between deaths and stringency for each day or week. Data that would support our hypothesis that prevention measures suppress other infectious diseases as well would show an correlation between higher stringency and lower deaths, which could be found by comparing different states and different times. Currently, we are comparing stringency to flu deaths for each week and state where data is available. For the data to be readable, the deaths in each state will have to be converted to a rate as a proportion of the population, and states or times will likely have to be faceted to reduce the number of data points on a single graph. Alpha or color could potentially be used to show time differences.
 ```{r initialvis}
 flu<-flu%>%
   transform(RegionName = SUB.AREA)%>%
@@ -43,8 +43,12 @@ oxford_lockdown<-oxford_lockdown%>%
   mutate(year = year(as.numeric('Date')), week = week(as.numeric('Date')))%>%
   mutate(yearweek = as.numeric(paste('year', 'week', sep = "")))
 combdat<-left_join(oxford_lockdown, flu, by = 'RegionName','yearweek')
+```
+``` {r ggplot}
 combdat%>%
   ggplot(aes(x = StringencyIndex, y = NUM.INFLUENZA.DEATHS)) +
   geom_point()
+#collapse by week, convert state deaths to rate/proportional to population
+#yearweek not working
 ```
 
