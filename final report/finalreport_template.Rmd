@@ -2,6 +2,18 @@
 title: "Final Report"
 subtitle: "due November 16, 2021 by 11:59 PM "
 author: "Your names and team name here"
-date: ""
+date: "11/16/2021"
 output: pdf_document
 ---
+Outline:
+compare this flu year to past flu years
+  test for statistical significance
+    find best way to test
+compare states/lockdown and mask levels (stringency index) to flu hospitalizations or deaths
+  consider using a model
+    test which model fits best
+    test for and explain statistical significance
+talk about why flu levels may be lower
+  more protective measures against respiratory illnesses
+  possibly more issues going to hospital for flu/collecting data
+  is the population most affected by flu being reduced by COVID?
