@@ -1,0 +1,43 @@
+---
+title: "Final Report"
+subtitle: "due November 16, 2021 by 11:59 PM "
+author: "Your names and team name here"
+date: "11/16/2021"
+output: pdf_document
+---
+Outline:
+
+#Introduction
+
+Starting in 2020, public health measures against the spread of respiratory disease were taken in an effort to slow or prevent the spread of COVID-19. These measures were much more significant than in previous years, as the primary strategies against the spread of respiratory disease in the United States are typically vaccination and encouraging frequent hand-washing, but measures against COVID-19 included shutting down large parts of society and moving online, as well as enforcement or encouragement of face coverings and vaccinations when available. This report studies how these public health measures may have affected the spread of other infectious disease by focusing on influenza hospitalizations and deaths in the United States, as the flu is one of the most common and deadly diseases each year in the U.S., and shares many characteristics with COVID-19.
+
+#Flu seasons during the COVID-19 Pandemic vs. past flu seasons
+
+Have flu deaths and hospitalizations changed during the COVID-19 pandemic compared to past years? If so, is this difference statistically significant?
+```{r seasons compare}
+#data/libraries
+#insert line graph
+don %>%
+  ggplot( aes(x=year, y=n, group=name, color=name)) +
+    geom_line() +
+    scale_color_viridis(discrete = TRUE) +
+    ggtitle("Influenza hospitalizations and deaths over time") +
+    theme_ipsum() +
+    ylab("Influenza hospitalizations or deaths")
+#insert table (?)
+#insert model?
+```
+Based on the data,
+compare this flu year to past flu years
+  test for statistical significance
+    find best way to test
+    
+#Comparison of lockdowns and flu levels by state/comparison of flu levels by lockdown stringency (?)
+compare states/lockdown and mask levels (stringency index) to flu hospitalizations or deaths
+  consider using a model
+    test which model fits best
+    test for and explain statistical significance
+talk about why flu levels may be lower
+  more protective measures against respiratory illnesses
+  possibly more issues going to hospital for flu/collecting data
+  is the population most affected by flu being reduced by COVID?
