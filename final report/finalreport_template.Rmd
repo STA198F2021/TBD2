@@ -1,7 +1,7 @@
 ---
 title: "Final Report"
 subtitle: "due November 16, 2021 by 11:59 PM "
-author: "Your names and team name here"
+author: "Harris Upchurch, Biniam Garomsa, Philemon Hailemariam"
 date: "11/16/2021"
 output: pdf_document
 ---
@@ -27,8 +27,9 @@ aggfludata <- fludata %>%
   mutate(yearweek = ifelse(WEEK <= 9,paste(year, week, sep = '0'),paste(year, week, sep = ''))) %>%
   group_by(yearweek) %>%
   drop_na() %>%
-  summarize(total_flu_patients = sum(total_flu)) %>%
-  ggplot(aes(x = yearweek, y = total_flu_patients)) +
+  summarize(total_flu_patients = sum(total_flu))%>%
+  transform(yearweek = as.numeric(yearweek))
+ggplot(aggfludata, aes(x = yearweek, y = total_flu_patients)) +
   geom_line()
 ```
 #table
