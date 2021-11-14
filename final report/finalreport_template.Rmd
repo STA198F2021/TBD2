@@ -24,14 +24,12 @@ fludata <-read.csv("~/R/TBD2/data/ILINet.csv", header=TRUE)
 aggfludata <- fludata %>%
   filter(REGION != 'Commonwealth of the Northern Mariana Islands') %>%
   transform(year = as.character(YEAR), week = as.character(WEEK), total_flu = as.numeric(ILITOTAL)) %>%
-  transform(week = ifelse(week <= 9, paste(0,week, sep = ''),week)) %>%
-  mutate(yearweek = paste(YEAR, WEEK, sep = '')) %>%
+  mutate(yearweek = ifelse(WEEK <= 9,paste(year, week, sep = '0'),paste(year, week, sep = ''))) %>%
   group_by(yearweek) %>%
   drop_na() %>%
-  summarize(total_flu_patients = sum(total_flu))
-aggfludata %>%
-  ggplot( aes(x=yearweek, y=total_flu_patients)) +
-    geom_line()
+  summarize(total_flu_patients = sum(total_flu)) %>%
+  ggplot(aes(x = yearweek, y = total_flu_patients)) +
+  geom_line()
 ```
 #table
 fludata %>%
