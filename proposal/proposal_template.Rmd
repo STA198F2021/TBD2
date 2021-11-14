@@ -46,6 +46,7 @@ combdat<-left_join(oxford_lockdown, flu, by = 'RegionName','yearweek')
 ```
 ``` {r ggplot}
 combdat%>%
+  filter('date' >= 20210901)%>%
   ggplot(aes(x = StringencyIndex, y = NUM.INFLUENZA.DEATHS)) +
   geom_point()
 #collapse by week, convert state deaths to rate/proportional to population
