@@ -25,12 +25,17 @@ aggfludata <- fludata %>%
   filter(REGION != 'Commonwealth of the Northern Mariana Islands') %>%
   transform(year = as.character(YEAR), week = as.character(WEEK), total_flu = as.numeric(ILITOTAL)) %>%
   mutate(yearweek = ifelse(WEEK <= 9,paste(year, week, sep = '0'),paste(year, week, sep = ''))) %>%
+  transform(yearweek = rank(yearweek))%>%
   group_by(yearweek) %>%
   drop_na() %>%
   summarize(total_flu_patients = sum(total_flu))%>%
   transform(yearweek = as.numeric(yearweek))
 ggplot(aggfludata, aes(x = yearweek, y = total_flu_patients)) +
-  geom_line()
+  geom_line() +
+  labs(title = 'U.S. Influenza Patients',
+       subtitle = 'CDC FLuView, 2013-2021',
+       x = 'Weeks since beginning of 2013',
+       y = 'Patients with influenza-like symptoms (excluding other diagnoses)')
 ```
 #table
 fludata %>%
