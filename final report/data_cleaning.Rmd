@@ -6,38 +6,68 @@ date: "11/16/2021"
 output: pdf_document
 ---
 Outline:
+# Load Packages
 
-#Introduction
 
-Starting in 2020, public health measures against the spread of respiratory disease were taken in an effort to slow or prevent the spread of COVID-19. These measures were much more significant than in previous years, as the primary strategies against the spread of respiratory disease in the United States are typically vaccination and encouraging frequent hand-washing, but measures against COVID-19 included shutting down large parts of society and moving online, as well as enforcement or encouragement of face coverings and vaccinations when available. This report studies how these public health measures may have affected the spread of other infectious disease by focusing on influenza hospitalizations and deaths in the United States, as the flu is one of the most common and deadly diseases each year in the U.S., and shares many characteristics with COVID-19.
-
-#Flu seasons during the COVID-19 Pandemic vs. past flu seasons
-
-Have flu deaths and hospitalizations changed during the COVID-19 pandemic compared to past years? If so, is this difference statistically significant?
-```{r seasons compare}
-#data/libraries
-#insert line graph
-don %>%
-  ggplot( aes(x=year, y=n, group=name, color=name)) +
-    geom_line() +
-    scale_color_viridis(discrete = TRUE) +
-    ggtitle("Influenza hospitalizations and deaths over time") +
-    theme_ipsum() +
-    ylab("Influenza hospitalizations or deaths")
-#insert table (?)
-#insert model?
+```{r load-packages}
+print(2)
 ```
-Based on the data,
-compare this flu year to past flu years
-  test for statistical significance
-    find best way to test
-    
-#Comparison of lockdowns and flu levels by state/comparison of flu levels by lockdown stringency (?)
-compare states/lockdown and mask levels (stringency index) to flu hospitalizations or deaths
-  consider using a model
-    test which model fits best
-    test for and explain statistical significance
-talk about why flu levels may be lower
-  more protective measures against respiratory illnesses
-  possibly more issues going to hospital for flu/collecting data
-  is the population most affected by flu being reduced by COVID?
+
+# Load Data
+```{r load-data}
+oxford_lockdown<-readr::read_csv(file = '~/R/TBD2/data/OxCGRT_US_latest.csv')
+flu<-readr::read_csv(file = '~/R/TBD2/data/State_Custom_Data.csv')
+ilinet <- readr::read_csv("~/R/TBD2/data/ILINet.csv")
+```
+
+```{r daily_change_to_weekly}
+ox2 <- oxford_lockdown %>%
+  filter(!is.na(StringencyIndex) & !is.na(RegionName) & !(RegionName=="")) %>%
+  transform(Date = as.Date(as.character(Date), "%Y%m%d")) %>%
+  mutate(Year = format(Date, "%Y"))%>%
+  mutate(Week = strftime(Date, format= "%V"))%>%
+  group_by(CountryName, CountryCode, RegionName, RegionCode, Year, Week) %>%
+  summarize(Stringency_Index = mean(StringencyIndex))
+```
+
+```{r}
+flu2<-flu%>%
+  mutate(Year = ifelse(WEEK>=40 & WEEK<=53, substr(SEASON,3,4),substr(SEASON,6,7)))%>%
+  mutate(Year = paste("20",Year,sep=""))
+```
+
+
+```{r change data format}
+ox2$Week<-as.numeric(ox2$Week)
+ox2$Year<-as.numeric(ox2$Year)
+flu2$WEEK<- as.numeric(flu2$WEEK)
+flu2$Year<- as.numeric(flu2$Year)
+ilinet$YEAR<-as.numeric(ilinet$YEAR)
+ilinet$WEEK<- as.numeric(ilinet$WEEK)
+```
+
+
+```{r merge flu& ili report data}
+flu_ili <- left_join(flu2,ilinet,by=c("SUB AREA" ="REGION","WEEK","Year"="YEAR"))
+flu_ili<-flu_ili%>% rename("YEAR" = "Year","STATE" ="SUB AREA")
+```
+
+```{r merge flu_ili with ox2}
+# ox2<-ox2%>%
+#   rename("STATE" = "RegionName","YEAR"= "Year","WEEK" = "Week")
+# merged <-left_join(ox2, flu_ili,by = c("STATE","WEEK","YEAR"))
+```
+
+```{r}
+merged2<-merged%>%
+  select("YEAR","WEEK","Stringency_Index", 'NUM INFLUENZA DEATHS','NUM PNEUMONIA DEATHS',
+         'NUM COVID-19 DEATHS','TOTAL DEATHS','%UNWEIGHTED ILI')
+merged2<- subset(merged2, select = -c(CountryName,CountryCode,RegionCode ))
+merged2
+```
+
+```{r}
+merged2%>%
+  ggplot(aes(x="WEEK",y = "TOTAL DEATHS"))+
+  geom_point()
+```
