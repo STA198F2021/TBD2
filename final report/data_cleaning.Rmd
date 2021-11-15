@@ -53,9 +53,9 @@ flu_ili<-flu_ili%>% rename("YEAR" = "Year","STATE" ="SUB AREA")
 ```
 
 ```{r merge flu_ili with ox2}
-# ox2<-ox2%>%
-#   rename("STATE" = "RegionName","YEAR"= "Year","WEEK" = "Week")
-# merged <-left_join(ox2, flu_ili,by = c("STATE","WEEK","YEAR"))
+ ox2<-ox2%>%
+   rename("STATE" = "RegionName","YEAR"= "Year","WEEK" = "Week")
+ merged <-left_join(ox2, flu_ili,by = c("STATE","WEEK","YEAR"))
 ```
 
 ```{r}
@@ -65,9 +65,39 @@ merged2<-merged%>%
 merged2<- subset(merged2, select = -c(CountryName,CountryCode,RegionCode ))
 merged2
 ```
+```{r}
+merged2 %>%
+  filter(YEAR == 2020 & !is.na(`NUM COVID-19 DEATHS`)) %>%
+  #mutate(covid_deaths = log( `NUM COVID-19 DEATHS`)) %>%
+  group_by(WEEK) %>%
+  summarise (mean_stringency_index = mean(Stringency_Index) ,mean_covid_death = mean(`NUM COVID-19 DEATHS`))%>%
+  ggplot(aes(x= mean_stringency_index, y = mean_covid_death)) +
+  geom_point()
+```
+```{r}
+merged2 %>%
+  filter(YEAR == 2020 & !is.na(`NUM INFLUENZA DEATHS`)) %>%
+  #mutate(covid_deaths = log( `NUM COVID-19 DEATHS`)) %>%
+  group_by(WEEK) %>%
+  summarise (mean_stringency_index = mean(Stringency_Index), mean_influenza_death = mean(`NUM INFLUENZA DEATHS`)) %>%
+  ggplot(aes(x= mean_stringency_index, y = mean_influenza_death)) +
+  geom_point()
+```
+```{r}
+merged2 %>%
+  filter(YEAR == 2020 & !is.na(`NUM PNEUMONIA DEATHS`)) %>%
+  #mutate(covid_deaths = log( `NUM COVID-19 DEATHS`)) %>%
+  group_by(WEEK) %>%
+  summarise (mean_stringency_index = mean(Stringency_Index), mean_pneumonia_death = mean(`NUM PNEUMONIA DEATHS`)) %>%
+  ggplot(aes(x= mean_stringency_index, y = mean_pneumonia_death)) +
+  geom_point()
+```
+```{r}
+
+```
 
 ```{r}
 merged2%>%
-  ggplot(aes(x="WEEK",y = "TOTAL DEATHS"))+
+  ggplot(aes(x="WEEK", y = "TOTAL DEATHS"))+
   geom_point()
 ```
