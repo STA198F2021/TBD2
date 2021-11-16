@@ -120,5 +120,133 @@ talk about why flu levels may be lower
   
 ```{r load-data}
 oxford_lockdown<-readr::read_csv(file = '~/R/TBD2/data/OxCGRT_US_latest.csv')
+flu_sec<-readr::read_csv(file = '~/R/TBD2/data/State_Custom_Data.csv')
+ilinet_sec <- readr::read_csv("~/R/TBD2/data/ILINet.csv")
+
+```
+
+```{r daily_change_to_weekly}
+ox2 <- oxford_lockdown %>%
+  filter(!is.na(StringencyIndex) & !is.na(RegionName) & !(RegionName=="")) %>%
+  transform(Date = as.Date(as.character(Date), "%Y%m%d")) %>%
+  mutate(Year = format(Date, "%Y"))%>%
+  mutate(Week = strftime(Date, format= "%V"))%>%
+  group_by(CountryName, CountryCode, RegionName, RegionCode, Year, Week) %>%
+  summarize(Stringency_Index = mean(StringencyIndex))
+```
+
+```{r}
+flu2<-flu_sec%>%
+  mutate(Year = ifelse(WEEK>=40 & WEEK<=53, substr(SEASON,3,4),substr(SEASON,6,7)))%>%
+  mutate(Year = paste("20",Year,sep=""))
+```
+
+
+```{r change data format}
+ox2$Week<-as.numeric(ox2$Week)
+ox2$Year<-as.numeric(ox2$Year)
+flu2$WEEK<- as.numeric(flu2$WEEK)
+flu2$Year<- as.numeric(flu2$Year)
+ilinet_sec$YEAR<-as.numeric(ilinet_sec$YEAR)
+ilinet_sec$WEEK<- as.numeric(ilinet_sec$WEEK)
+```
+
+
+```{r merge flu& ili report data}
+flu_ili <- left_join(flu2,ilinet_sec,by=c("SUB AREA" ="REGION","WEEK","Year"="YEAR"))
+flu_ili<-flu_ili%>% rename("YEAR" = "Year","STATE" ="SUB AREA")
+```
+
+```{r merge flu_ili with ox2}
+ ox2<-ox2%>%
+   rename("STATE" = "RegionName","YEAR"= "Year","WEEK" = "Week")
+ merged <-left_join(ox2, flu_ili,by = c("STATE","WEEK","YEAR"))
+```
+
+```{r}
+merged2<-merged%>%
+  select("YEAR","WEEK","Stringency_Index", 'NUM INFLUENZA DEATHS','NUM PNEUMONIA DEATHS',
+         'NUM COVID-19 DEATHS','TOTAL DEATHS','%UNWEIGHTED ILI')
+merged2<- subset(merged2, select = -c(CountryName,CountryCode,RegionCode ))
+merged2
+```
+
+```{r}
+merged_5_states <- merged2%>%
+  filter(STATE %in% c('California', 'Texas','Florida','New York'))
+```
+
+```{r}
+merged_5_states%>%
+ggplot()+
+geom_smooth(aes(x = WEEK, y = Stringency_Index, color = as.factor(YEAR)))+
+  facet_wrap(~STATE)+
+  labs(title = 'Stringency Index',
+  y = 'Stringency Index',
+    color ='Year')
+```
+
+
+```{r}
+merged_5_states %>%
+  filter(YEAR == 2020) %>%
+ggplot()+
+geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
+  geom_smooth(aes(x = WEEK, y = `NUM INFLUENZA DEATHS`), color ='red')+
+  facet_wrap(~STATE)+
+  labs(title =' Stringency Index vs Influenza Deaths 2020',
+  )
+```
+
+```{r}
+merged_5_states %>%
+  filter(YEAR == 2021) %>%
+ggplot()+
+geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
+  geom_smooth(aes(x = WEEK, y = `NUM INFLUENZA DEATHS`), color ='red')+
+  facet_wrap(~STATE)+
+  labs(title =' Stringency Index vs Influenza Deaths 2021',
+  )
+```
+
+```{r}
+merged_5_states %>%
+  filter(YEAR == 2020 & !is.na(`%UNWEIGHTED ILI`)) %>%
+ggplot()+
+geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
+  geom_smooth(aes(x = WEEK, y = `%UNWEIGHTED ILI`*10), color ='red')+
+  facet_wrap(~STATE)+
+  labs(title =' Stringency Index vs hospitalizaiton percentage 2020',
+  )
+```
+```{r}
+merged_5_states %>%
+  filter(YEAR == 2021 & !is.na(`%UNWEIGHTED ILI`) & STATE !='Florida') %>%
+ggplot()+
+geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
+  geom_smooth(aes(x = WEEK, y = `%UNWEIGHTED ILI`*10), color ='red')+
+  facet_wrap(~STATE)+
+  labs(title =' Stringency Index vs hospitalizaiton percentage 2021')
+```
+
+```{r}
+merged_5_states %>%
+  filter(YEAR == 2020) %>%
+ggplot()+
+geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
+  geom_smooth(aes(x = WEEK, y = `NUM COVID-19 DEATHS`/30), color ='red')+
+  facet_wrap(~STATE)+
+  labs(title =' Stringency Index vs Covid Deaths 2020')
+```
+
+```{r}
+merged_5_states %>%
+  filter(YEAR == 2021) %>%
+ggplot()+
+geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
+  geom_smooth(aes(x = WEEK, y = `NUM COVID-19 DEATHS`/100), color ='red')+
+  facet_wrap(~STATE)+
+  labs(title =' Stringency Index vs Covid Deaths 2021',
+  )
 ```
 
