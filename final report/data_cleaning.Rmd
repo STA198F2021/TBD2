@@ -65,6 +65,16 @@ merged2<-merged%>%
 merged2<- subset(merged2, select = -c(CountryName,CountryCode,RegionCode ))
 merged2
 ```
+
+```{r}
+merged2%>%
+  filter(YEAR==2020, STATE =="Alabama")%>%
+  ggplot(aes(x = WEEK))+
+  geom_line(aes(y = Stringency_Index))+
+  geom_line(aes(y= `NUM INFLUENZA DEATHS`,color="red"))
+
+```
+
 ```{r}
 merged2 %>%
   filter(YEAR == 2020 & !is.na(`NUM COVID-19 DEATHS`)) %>%
@@ -74,6 +84,7 @@ merged2 %>%
   ggplot(aes(x= mean_stringency_index, y = mean_covid_death)) +
   geom_point()
 ```
+
 ```{r}
 merged2 %>%
   filter(YEAR == 2020 & !is.na(`NUM INFLUENZA DEATHS`)) %>%
@@ -83,6 +94,7 @@ merged2 %>%
   ggplot(aes(x= mean_stringency_index, y = mean_influenza_death)) +
   geom_point()
 ```
+
 ```{r}
 merged2 %>%
   filter(YEAR == 2020 & !is.na(`NUM PNEUMONIA DEATHS`)) %>%
