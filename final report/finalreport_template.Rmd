@@ -249,6 +249,7 @@ t.test(fl$`NUM INFLUENZA DEATHS`~fl$afterCovid,var.equal=FALSE)
 ```{r}
 t.test(fl$`NUM PNEUMONIA DEATHS`~fl$afterCovid,var.equal=FALSE)
 ```
+
 ```{r}
 t.test(fl$`%UNWEIGHTED ILI`~fl$afterCovid,var.equal=FALSE)
 ```
