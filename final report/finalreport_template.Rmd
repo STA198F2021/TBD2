@@ -118,14 +118,12 @@ talk about why flu levels may be lower
   possibly more issues going to hospital for flu/collecting data
   is the population most affected by flu being reduced by COVID?
   
-```{r load-data}
+```{r clean, merge datasets}
 oxford_lockdown<-readr::read_csv(file = '~/R/TBD2/data/OxCGRT_US_latest.csv')
 flu_sec<-readr::read_csv(file = '~/R/TBD2/data/State_Custom_Data.csv')
 ilinet_sec <- readr::read_csv("~/R/TBD2/data/ILINet.csv")
 
-```
-
-```{r daily_change_to_weekly}
+# extract date from week 
 ox2 <- oxford_lockdown %>%
   filter(!is.na(StringencyIndex) & !is.na(RegionName) & !(RegionName=="")) %>%
   transform(Date = as.Date(as.character(Date), "%Y%m%d")) %>%
@@ -133,48 +131,40 @@ ox2 <- oxford_lockdown %>%
   mutate(Week = strftime(Date, format= "%V"))%>%
   group_by(CountryName, CountryCode, RegionName, RegionCode, Year, Week) %>%
   summarize(Stringency_Index = mean(StringencyIndex))
-```
 
-```{r}
+
 flu2<-flu_sec%>%
   mutate(Year = ifelse(WEEK>=40 & WEEK<=53, substr(SEASON,3,4),substr(SEASON,6,7)))%>%
   mutate(Year = paste("20",Year,sep=""))
-```
 
-
-```{r change data format}
+# change data format
 ox2$Week<-as.numeric(ox2$Week)
 ox2$Year<-as.numeric(ox2$Year)
 flu2$WEEK<- as.numeric(flu2$WEEK)
 flu2$Year<- as.numeric(flu2$Year)
 ilinet_sec$YEAR<-as.numeric(ilinet_sec$YEAR)
 ilinet_sec$WEEK<- as.numeric(ilinet_sec$WEEK)
-```
 
-
-```{r merge flu& ili report data}
+# merge flu& ili report data
 flu_ili <- left_join(flu2,ilinet_sec,by=c("SUB AREA" ="REGION","WEEK","Year"="YEAR"))
 flu_ili<-flu_ili%>% rename("YEAR" = "Year","STATE" ="SUB AREA")
-```
 
-```{r merge flu_ili with ox2}
+
  ox2<-ox2%>%
    rename("STATE" = "RegionName","YEAR"= "Year","WEEK" = "Week")
  merged <-left_join(ox2, flu_ili,by = c("STATE","WEEK","YEAR"))
-```
 
-```{r}
-merged2<-merged%>%
+ 
+ merged2<-merged%>%
   select("YEAR","WEEK","Stringency_Index", 'NUM INFLUENZA DEATHS','NUM PNEUMONIA DEATHS',
          'NUM COVID-19 DEATHS','TOTAL DEATHS','%UNWEIGHTED ILI')
 merged2<- subset(merged2, select = -c(CountryName,CountryCode,RegionCode ))
-merged2
+# select five states for visualization
+merged_5_states <- merged2%>%
+  filter(STATE %in% c('California', 'Texas','Florida','New York','North Carolina'))
 ```
 
-```{r}
-merged_5_states <- merged2%>%
-  filter(STATE %in% c('California', 'Texas','Florida','New York'))
-```
+
 
 ```{r}
 merged_5_states%>%
