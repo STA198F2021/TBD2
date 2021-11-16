@@ -133,8 +133,7 @@ ggplot()+
 geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
   geom_smooth(aes(x = WEEK, y = `NUM COVID-19 DEATHS`/30), color ='red')+
   facet_wrap(~STATE)+
-  labs(title =' Stringency Index vs Covid Deaths 2020',
-  )
+  labs(title =' Stringency Index vs Covid Deaths 2020')
 ```
 
 ```{r}
