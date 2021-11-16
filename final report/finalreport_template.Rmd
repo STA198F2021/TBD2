@@ -250,3 +250,13 @@ geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
   )
 ```
 
+```{r}
+fl<-flu_ili%>%
+  mutate(afterCovid = ifelse((YEAR==2021 | YEAR ==2020), 1,0))
+t.test(fl$`NUM INFLUENZA DEATHS`~fl$afterCovid,var.equal=FALSE)
+```
+
+```{r}
+t.test(fl$`NUM PNEUMONIA DEATHS`~fl$afterCovid,var.equal=FALSE)
+```
+
