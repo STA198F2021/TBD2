@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Presentation title</title>
+    <title>Relationship between COVID-19 Restrictions and Influenza</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Team name   Names of team members" />
-    <meta name="date" content="2021-10-06" />
-    <script src="libs/header-attrs-2.9/header-attrs.js"></script>
+    <meta name="author" content="Phila’s Filas (TBD2)   Harris Upchurch, Biniam Garomsa, Philemon Hailemariam" />
+    <meta name="date" content="2021-11-16" />
+    <script src="libs/header-attrs-2.11/header-attrs.js"></script>
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Presentation title
-## Presentation subtitle (if any)
-### Team name <br> Names of team members
+# Relationship between COVID-19 Restrictions and Influenza
+## In the United States
+### Phila’s Filas (TBD2) <br> Harris Upchurch, Biniam Garomsa, Philemon Hailemariam
 ### Duke University
-### 2021-10-06
+### 2021-11-16
 
 ---
 
@@ -31,39 +31,56 @@ class: center, middle, inverse, title-slide
 
 class: inverse, middle, center
 
-# Using xaringan
+# COVID-19 and Influenza
 
 ---
 
-## xaringan
+## COVID-19 and Influenza
 
-- The presentation is created using the `xaringan` package
+- In an effort to combat COVID-19, many public health measures have been taken since 2020 which have the capacity to affect other diseases.
 
-- Use `---` to separate slides and `--` for incremental builds
+- Have these measures (especially masks and lockdowns) impacted the spread of other diseases? To what extent and which diseases?
 
 --
 
-- Like this
+- To answer this question, we focused on influenza.
+--
+.pull-left[
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="img/cdc influenza.png" alt="Image credit: CDC." width="60%" /&gt;
+&lt;p class="caption"&gt;Image credit: CDC.&lt;/p&gt;
+&lt;/div&gt;
+]
+.pull-center[
+- Influenza is a group of related viruses. Although COVID-19 and influenza viruses have many differences, they are both respiratory illnesses which spread similarly. 
+- Additionally, influenza is one of the most common and deadly infectious diseases in the United States and has its own CDC monitoring tool.
+]
+
 
 ---
 
-## Layouts
+## Investigation
 
-You can use plain text
+- First, we pulled available data for flu hospitalizations and deaths from the CDC's FluView monitoring program.
 
-- or bullet points
+--
 
+- We then plotted these data over the years to prepare the data to test for significance.
 .pull-left[
-or text in two columns `\(^*\)`
+&lt;img src="presentation_files/figure-html/seasons compare-1.png" width="110%" /&gt;
 ]
 .pull-right[
-- like
-- this
+&lt;img src="presentation_files/figure-html/deaths linegraph-1.png" width="110%" /&gt;
+]
+---
+
+.pull-left[
+
+]
+.pull-right[
+&lt;img src="presentation_files/figure-html/deaths linegraph 2-1.png" width="70%" /&gt;
 ]
 
-.footnote[
-[*] And add footnotes
-]
 
 ---
 
@@ -252,7 +269,7 @@ class: inverse, middle, center
 
 - Want to find out more about `xaringan`? See https://slides.yihui.name/xaringan/#1.
 
-- You are welcomed to use the default styling of the slides. In fact, that's what I expect majority of you will do. You will differentiate yourself with the content of your presentation.
+- You are welcomed to use the default styling of the slides. In fact, that's what I expect the majority of you will do. You will differentiate yourself with the content of your presentation.
 
 - But some of you might want to play around with slide styling. The 
 `xaringanthemer` provides some solutions for this that: https://pkg.garrickadenbuie.com/xaringanthemer.
@@ -263,7 +280,7 @@ class: inverse, middle, center
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
 "ratio": "16:9",
-"highlightStyle": "github",
+"highlightStyle": "solarized-light",
 "highlightLines": true,
 "countIncrementalSlides": false
 });
