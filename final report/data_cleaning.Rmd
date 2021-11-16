@@ -69,29 +69,29 @@ merged2
 ```
 
 ```{r}
-# merged2%>%
-#   filter(YEAR==2020 & STATE =="New York")%>%
-# ggplot()+
-# geom_line(aes(x = WEEK, y = Stringency_Index ))
-#   
-#   
-# merged2%>%
-#   filter(YEAR==2020 & STATE =="New York")%>%
-# ggplot()+
-# geom_line(aes(x = WEEK, y = Stringency_Index ))+
-# geom_line(aes(x = WEEK,y= `NUM INFLUENZA DEATHS`))
-# 
-# merged2%>%
-#   filter(YEAR==2020 & STATE =="New York")%>%
-# ggplot()+
-# geom_line(aes(x = WEEK, y = Stringency_Index ))+
-# geom_line(aes(x = WEEK,y=`NUM PNEUMONIA DEATHS`))
-# 
-# merged2%>%
-#   filter(YEAR==2020 & STATE =="New York")%>%
-# ggplot()+
-# geom_line(aes(x = WEEK, y = Stringency_Index ))+
-# geom_line(aes(x = WEEK,y= `NUM COVID-19 DEATHS`))
+merged2%>%
+  filter(YEAR==2020 & STATE =="New York")%>%
+ggplot()+
+geom_line(aes(x = WEEK, y = Stringency_Index ))
+
+
+merged2%>%
+  filter(YEAR==2020 & STATE =="New York")%>%
+ggplot()+
+geom_line(aes(x = WEEK, y = Stringency_Index ))+
+geom_line(aes(x = WEEK,y= `NUM INFLUENZA DEATHS`))
+
+merged2%>%
+  filter(YEAR==2020 & STATE =="New York")%>%
+ggplot()+
+geom_line(aes(x = WEEK, y = Stringency_Index ))+
+geom_line(aes(x = WEEK,y=`NUM PNEUMONIA DEATHS`))
+
+merged2%>%
+  filter(YEAR==2020 & STATE =="New York")%>%
+ggplot()+
+geom_line(aes(x = WEEK, y = Stringency_Index ))+
+geom_line(aes(x = WEEK,y= `NUM COVID-19 DEATHS`))
 
 merged2%>%
   filter(STATE =="New York")%>%
