@@ -1,7 +1,7 @@
 ---
-title: "Presentation title"
-subtitle: "Presentation subtitle (if any)"
-author: "Team name <br> Names of team members"
+title: "Relationship between COVID-19 Restrictions and Influenza"
+subtitle: "In the United States"
+author: "Phila's Filas (TBD2) <br> Harris Upchurch, Biniam Garomsa, Philemon Hailemariam"
 institute: "Duke University"
 date: "`r Sys.Date()`"
 output:
@@ -10,7 +10,7 @@ output:
     lib_dir: libs
     nature:
       ratio: "16:9"
-      highlightStyle: github
+      highlightStyle: solarized-light
       highlightLines: true
       countIncrementalSlides: false
 ---
@@ -40,27 +40,40 @@ knitr::opts_chunk$set(
 # Load your data here
 ```
 
-```{r style-slides, echo = FALSE}
-style_xaringan(
-  title_slide_background_image = "img/watercolour_sys02_img34_teacup-ocean.jpg"
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+style_solarized_light(
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i"),
+  code_font_google   = google_font("Fira Mono")
 )
 ```
 
 class: inverse, middle, center
 
-# Using xaringan
+# COVID-19 and Influenza
 
 ---
 
-## xaringan
+## COVID-19 and Influenza
 
-- The presentation is created using the `xaringan` package
+- In an effort to combat COVID-19, many public health measures have been taken since 2020 which have the capacity to affect other diseases.
 
-- Use `---` to separate slides and `--` for incremental builds
+- Have these measures (especially masks and lockdowns) impacted the spread of other diseases? To what extent and which diseases?
 
 --
 
-- Like this
+- To answer this question, we focused on influenza.
+--
+.pull-left[
+```{r flu img, echo = FALSE, out.width = "40%", fig.align = "center", fig.cap = "Image credit: CDC."}
+include_graphics("img/cdc influenza.png")
+```
+]
+.pull-center[
+- Influenza is a group of related viruses. Although COVID-19 and influenza viruses have different fatality rates, infectivities, and incubation periods, they are both respiratory illnesses which spread similarly. 
+- Additionally, influenza is one of the most common and deadly infectious diseases in the United States, killing thousands of people each year, and has its own CDC monitoring tool.
+]
+
 
 ---
 
