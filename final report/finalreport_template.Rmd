@@ -117,3 +117,8 @@ talk about why flu levels may be lower
   more protective measures against respiratory illnesses
   possibly more issues going to hospital for flu/collecting data
   is the population most affected by flu being reduced by COVID?
+  
+```{r load-data}
+oxford_lockdown<-readr::read_csv(file = '~/R/TBD2/data/OxCGRT_US_latest.csv')
+```
+
