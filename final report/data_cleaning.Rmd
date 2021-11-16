@@ -10,7 +10,9 @@ Outline:
 
 
 ```{r load-packages}
-print(2)
+library(dplyr)
+library(tidyverse)
+library(viridis)
 ```
 
 # Load Data
@@ -65,39 +67,53 @@ merged2<-merged%>%
 merged2<- subset(merged2, select = -c(CountryName,CountryCode,RegionCode ))
 merged2
 ```
-```{r}
-merged2 %>%
-  filter(YEAR == 2020 & !is.na(`NUM COVID-19 DEATHS`)) %>%
-  #mutate(covid_deaths = log( `NUM COVID-19 DEATHS`)) %>%
-  group_by(WEEK) %>%
-  summarise (mean_stringency_index = mean(Stringency_Index) ,mean_covid_death = mean(`NUM COVID-19 DEATHS`))%>%
-  ggplot(aes(x= mean_stringency_index, y = mean_covid_death)) +
-  geom_point()
-```
-```{r}
-merged2 %>%
-  filter(YEAR == 2020 & !is.na(`NUM INFLUENZA DEATHS`)) %>%
-  #mutate(covid_deaths = log( `NUM COVID-19 DEATHS`)) %>%
-  group_by(WEEK) %>%
-  summarise (mean_stringency_index = mean(Stringency_Index), mean_influenza_death = mean(`NUM INFLUENZA DEATHS`)) %>%
-  ggplot(aes(x= mean_stringency_index, y = mean_influenza_death)) +
-  geom_point()
-```
-```{r}
-merged2 %>%
-  filter(YEAR == 2020 & !is.na(`NUM PNEUMONIA DEATHS`)) %>%
-  #mutate(covid_deaths = log( `NUM COVID-19 DEATHS`)) %>%
-  group_by(WEEK) %>%
-  summarise (mean_stringency_index = mean(Stringency_Index), mean_pneumonia_death = mean(`NUM PNEUMONIA DEATHS`)) %>%
-  ggplot(aes(x= mean_stringency_index, y = mean_pneumonia_death)) +
-  geom_point()
-```
-```{r}
-
-```
 
 ```{r}
 merged2%>%
-  ggplot(aes(x="WEEK", y = "TOTAL DEATHS"))+
-  geom_point()
+  filter(YEAR==2020 & STATE =="New York")%>%
+ggplot()+
+geom_line(aes(x = WEEK, y = Stringency_Index ))
+
+
+merged2%>%
+  filter(YEAR==2020 & STATE =="New York")%>%
+ggplot()+
+geom_line(aes(x = WEEK, y = Stringency_Index ))+
+geom_line(aes(x = WEEK,y= `NUM INFLUENZA DEATHS`))
+
+merged2%>%
+  filter(YEAR==2020 & STATE =="New York")%>%
+ggplot()+
+geom_line(aes(x = WEEK, y = Stringency_Index ))+
+geom_line(aes(x = WEEK,y=`NUM PNEUMONIA DEATHS`))
+
+merged2%>%
+  filter(YEAR==2020 & STATE =="New York")%>%
+ggplot()+
+geom_line(aes(x = WEEK, y = Stringency_Index ))+
+geom_line(aes(x = WEEK,y= `NUM COVID-19 DEATHS`))
+
+merged2%>%
+  filter(STATE =="New York")%>%
+ggplot()+
+# geom_line(aes(x = WEEK, y = (Stringency_Index )))+
+geom_line(aes(x = WEEK,y=(`NUM COVID-19 DEATHS`),color=Stringency_Index))+
+  facet_wrap(~YEAR)
+```
+
+```{r}
+flu_ili
+```
+```{r}
+fl<-flu_ili%>%
+  mutate(afterCovid = ifelse((YEAR==2021 | YEAR ==2020), 1,0))
+t.test(fl$`NUM INFLUENZA DEATHS`~fl$afterCovid,var.equal=FALSE)
+```
+
+```{r}
+t.test(fl$`NUM PNEUMONIA DEATHS`~fl$afterCovid,var.equal=FALSE)
+```
+
+```{r}
+scale(merged2$Stringency_Index)
 ```
