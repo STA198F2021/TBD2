@@ -75,7 +75,7 @@ flu_table %>%
             total_flu_patients = sum(total_flu_patients))%>%
   print()
 ```
-Based on the data, the hospitalizations for the 2020-2021 flu season were similar to several seasons in past years, but noticeably lower than the most recent 2017-2019 seasons, with a total of 917,038 hospitalizations, which was somewhat higher than the 2013-2017 seasons, but about half of the most recent season. The 2021-2022 season is not complete, but appears to be on track to be similar to years before the 2017-2019 period, like the 2020-2021 season. The deaths of both the 2020-2021 season and the 2021-2022 season were and have been noticeably less than any of the previous years used for this comparison. The 2020-2021 season had 25.9% of the deaths of the next least deadly year and 11.1% of the average deaths (7,543.14) of previous seasons, and the 2021-2022 season is on track to follow a similar pattern. These findings indicate some noticeable differences between influenza effects before and during COVID-19, but statistical tests should be done to prove and quantify their difference. Due to the variance between weeks within season, a test should be used which tests for significance either across seasons in total or mean or within analogous weeks across seasons. This significantly reduces the sample size that may be used within a test from approximately 400 weeks to about 9 seasons. Additionally, the 2021-2022 season must be adjusted to be able to be fairly compared and used for statistical significance. The mean will not allow comparison on its own, due to the peak pattern of each season, so the best way to compare 2021-2022 to other seasons is most likely to cut off each season to the first few weeks, which would further reduce sample size. The statistical test that is used will test for how the binary variable for whether or not the COVID-19 pandemic is occurring explains the observations for the numerical variables of influenza hospitalizations and deaths.
+Based on the data, the hospitalizations for the 2020-2021 flu season were similar to several seasons in past years, but noticeably lower than the most recent 2017-2019 seasons, with a total of 917,038 hospitalizations, which was somewhat higher than the 2013-2017 seasons, but about half of the most recent season. The 2021-2022 season is not complete, but appears to be on track to be similar to years before the 2017-2019 period, like the 2020-2021 season. The deaths of both the 2020-2021 season and the 2021-2022 season were and have been noticeably less than any of the previous years used for this comparison. The 2020-2021 season had 25.9% of the deaths of the next least deadly year and 11.1% of the average deaths (7,543.14) of previous seasons, and the 2021-2022 season is on track to follow a similar pattern. These findings indicate some noticeable differences between influenza effects before and during COVID-19, but statistical tests should be done to prove and quantify their difference. Due to the variance between weeks within season, a test should be used which tests for significance either across seasons in total or mean or within analogous weeks across seasons. However, because the peak and distribution within each season is not consistent, comparing along weekly lines causes some issues. This significantly reduces the sample size that may be used within a test from approximately 400 weeks to about 9 seasons. One potential way to adjust for the seasonal patterns is to select the most impactful weeks from each season, so that there are more data points for each category than only using seasons, but the range of values does not include many weeks where the flu is not present. Additionally, the 2021-2022 season must be adjusted to be able to be fairly compared and used for statistical significance. The mean will not allow comparison on its own, due to the peak pattern of each season, so the best way to compare 2021-2022 to other seasons is most likely to cut off each season to the first few weeks, which would further reduce sample size. The statistical test that is used will test for how the binary variable for whether or not the COVID-19 pandemic is occurring explains the observations for the numerical variables of influenza hospitalizations and deaths.
 ```{r linegraph 2}
 library(broom)
 library(modelr)
@@ -88,20 +88,26 @@ covid_flu_table <- flu_table %>%
   ungroup()%>%
   group_by(seasonweek)
 covid_flu_table %>%
-  ggplot( aes(x = seasonweek)) +
+  ggplot( aes(x = seasonweek, color = season)) +
   geom_line(aes(y = total_flu_deaths, group = season)) +
-  geom_smooth(aes(y = total_flu_deaths))
+  labs(title = 'Seasonal Influenza Deaths',
+       subtitle = 'CDC, 2013-2021',
+       x = 'Deaths',
+       y = 'Week of Season',
+       color = 'Season')
 ```
-
+In the line graph above, some of the issues posed by the data in finding statistical significance can be observed. Peaks and patterns do not line up consistently across years and the current definition of seasons includes many weeks that are not actually affected by the flu. Restricting the definition of a season by only taking the top weeks for deaths or hospitalization in each season can allow for more effective significance testing.
 ```{r model}
-nest_covid_flu_table <- covid_flu_table%>%
-  nest()
-flu_death_fit <- function(nest_covid_flu_table) {lm(total_flu_deaths ~ covidstatus, data = nest_covid_flu_table)}
-flu_hosp_fit <- function(nest_covid_flu_table) {lm(total_flu_patients ~ covidstatus, data = nest_covid_flu_table)}
-nest_covid_flu_table <- nest_covid_flu_table%>%
-  mutate(deathmodel = map(data, flu_death_fit), hospmodel = map(data, flu_hosp_fit))
+covid_flu_table<-covid_flu_table%>%
+  group_by(season)%>%
+  slice_max(order_by = total_flu_deaths, n = 10)%>%
+  ungroup()
+lm(total_flu_deaths ~ covidstatus, data = covid_flu_table)%>%
+tidy(conf.int = TRUE)
+lm(total_flu_patients ~ covidstatus, data = covid_flu_table)%>%
+tidy(conf.int = TRUE)
 ```
-Based on the model, there is 
+Based on the model, there is a statistically significant difference between the number of deaths at the peak 10 weeks of each season when comparing weeks in non-COVID times with weeks in COVID-affected times. The p value for covidstatus is 1.19x10^-6, which is less than .05 and the confidence interval of -686.46 to -309.41 does not include the null hypothesis of 0, which would indicate no difference in the data. The model indicates that moving from non-COVID to COVID time correlates with a decrease in deaths of 497.94 from the estimate of 527.69. Based on this data, something that has happened during the pandemic has most likely caused a decrease in deaths due to the flu. The model also indicates that there was a statistically significant decrease in hospitalizations when compared to the norm, by 25,190.74, from an estimate of 42,691.49, with a p value of 4.22x10^-4, which is less than 0.05, and a confidence interval of -38,813.74 to -11,567.73, which does not include the null hypothesis of 0. This is less than the difference in deaths, in terms of significance, but it is interesting because the hospitalizations were similar to past hospitalization levels, but the model still determine that its difference was significance due to the upward trend in hospitalization in recent years. The data for deaths was not similar to anything recorded in the past for the time period tested.
 #Comparison of lockdowns and flu levels by state/comparison of flu levels by lockdown stringency (?)
 compare states/lockdown and mask levels (stringency index) to flu hospitalizations or deaths
   consider using a model
