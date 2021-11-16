@@ -69,36 +69,103 @@ merged2
 ```
 
 ```{r}
-merged2%>%
-  filter(YEAR==2020 & STATE =="New York")%>%
+merged_5_states <- merged2%>%
+  filter(STATE %in% c('California', 'Texas','Florida','New York'))
+```
+
+```{r}
+merged_5_states%>%
 ggplot()+
-geom_line(aes(x = WEEK, y = Stringency_Index ))
+geom_smooth(aes(x = WEEK, y = Stringency_Index, color = as.factor(YEAR)))+
+  facet_wrap(~STATE)+
+  labs(title = 'Stringency Index',
+  y = 'Stringency Index',
+    color ='Year')
+```
 
 
-merged2%>%
-  filter(YEAR==2020 & STATE =="New York")%>%
+```{r}
+merged_5_states %>%
+  filter(YEAR == 2020) %>%
 ggplot()+
-geom_line(aes(x = WEEK, y = Stringency_Index ))+
-geom_line(aes(x = WEEK,y= `NUM INFLUENZA DEATHS`))
+geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
+  geom_smooth(aes(x = WEEK, y = `NUM INFLUENZA DEATHS`), color ='red')+
+  facet_wrap(~STATE)+
+  labs(title =' Stringency Index vs Influenza Deaths 2020',
+  )
+```
 
-merged2%>%
-  filter(YEAR==2020 & STATE =="New York")%>%
+```{r}
+merged_5_states %>%
+  filter(YEAR == 2021) %>%
 ggplot()+
-geom_line(aes(x = WEEK, y = Stringency_Index ))+
-geom_line(aes(x = WEEK,y=`NUM PNEUMONIA DEATHS`))
+geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
+  geom_smooth(aes(x = WEEK, y = `NUM INFLUENZA DEATHS`), color ='red')+
+  facet_wrap(~STATE)+
+  labs(title =' Stringency Index vs Influenza Deaths 2021',
+  )
+```
 
-merged2%>%
-  filter(YEAR==2020 & STATE =="New York")%>%
+```{r}
+merged_5_states %>%
+  filter(YEAR == 2020 & !is.na(`%UNWEIGHTED ILI`)) %>%
 ggplot()+
-geom_line(aes(x = WEEK, y = Stringency_Index ))+
-geom_line(aes(x = WEEK,y= `NUM COVID-19 DEATHS`))
+geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
+  geom_smooth(aes(x = WEEK, y = `%UNWEIGHTED ILI`*10), color ='red')+
+  facet_wrap(~STATE)+
+  labs(title =' Stringency Index vs hospitalizaiton percentage 2020',
+  )
+```
+```{r}
+merged_5_states %>%
+  filter(YEAR == 2021 & !is.na(`%UNWEIGHTED ILI`) & STATE !='Florida') %>%
+ggplot()+
+geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
+  geom_smooth(aes(x = WEEK, y = `%UNWEIGHTED ILI`*10), color ='red')+
+  facet_wrap(~STATE)+
+  labs(title =' Stringency Index vs hospitalizaiton percentage 2021')
+```
 
+```{r}
+merged_5_states %>%
+  filter(YEAR == 2020) %>%
+ggplot()+
+geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
+  geom_smooth(aes(x = WEEK, y = `NUM COVID-19 DEATHS`/30), color ='red')+
+  facet_wrap(~STATE)+
+  labs(title =' Stringency Index vs Covid Deaths 2020',
+  )
+```
+
+```{r}
+merged_5_states %>%
+  filter(YEAR == 2021) %>%
+ggplot()+
+geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
+  geom_smooth(aes(x = WEEK, y = `NUM COVID-19 DEATHS`/100), color ='red')+
+  facet_wrap(~STATE)+
+  labs(title =' Stringency Index vs Covid Deaths 2021',
+  )
+```
+
+
+
+```{r}
 merged2%>%
   filter(STATE =="New York")%>%
 ggplot()+
 # geom_line(aes(x = WEEK, y = (Stringency_Index )))+
 geom_line(aes(x = WEEK,y=(`NUM COVID-19 DEATHS`),color=Stringency_Index))+
   facet_wrap(~YEAR)
+```
+
+```{r}
+merged3 <- merged2 %>%
+  filter(YEAR == 2020 & STATE == 'California')
+
+linear_reg() %>%
+  set_engine("lm") %>%
+  fit(`NUM INFLUENZA DEATHS` ~ WEEK, data = merged3)
 ```
 
 ```{r}
