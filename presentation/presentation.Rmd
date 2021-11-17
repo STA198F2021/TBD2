@@ -292,7 +292,7 @@ labels = c( "Stringency Index", "% Influenza Infections" ))
 merged_5_states%>%
   filter(YEAR == 2020)%>%
   ggplot(aes(`Stringency_Index`, `NUM INFLUENZA DEATHS`))+
-  geom_smooth(method = "lm")+
+  geom_smooth(method = "lm",formula = y ~ x, method = "loess")+
   geom_point()+
   facet_wrap(~STATE)
 ```
