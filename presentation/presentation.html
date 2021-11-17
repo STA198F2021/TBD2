@@ -72,45 +72,50 @@ class: inverse, middle, center
 .pull-right[
 &lt;img src="presentation_files/figure-html/deaths linegraph-1.png" width="110%" /&gt;
 ]
+
+
 ---
 
-.pull-left[
 
-]
-.pull-right[
+
+
+#Preparing for Modelling
+
 &lt;img src="presentation_files/figure-html/deaths linegraph 2-1.png" width="70%" /&gt;
-]
-
 
 ---
 
-## Code
+#Model
 
 
 ```r
-# a boring regression
-model &lt;- lm(dist ~ speed, data = cars)
-tidy(model)
+covid_flu_table&lt;-covid_flu_table%&gt;%
+  group_by(season)%&gt;%
+  slice_max(order_by = total_flu_deaths, n = 10)%&gt;%
+  ungroup()
+lm(total_flu_deaths ~ covidstatus, data = covid_flu_table)%&gt;%
+tidy(conf.int = TRUE)
 ```
 
 ```
-## # A tibble: 2 × 5
-##   term        estimate std.error statistic  p.value
-##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-## 1 (Intercept)   -17.6      6.76      -2.60 1.23e- 2
-## 2 speed           3.93     0.416      9.46 1.49e-12
+## # A tibble: 2 × 7
+##   term        estimate std.error statistic  p.value conf.low conf.high
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)     528.      36.2     14.6  3.34e-24     456.      600.
+## 2 covidstatus    -498.      94.7     -5.26 1.19e- 6    -686.     -309.
 ```
 
 ```r
-glance(model)
+lm(total_flu_patients ~ covidstatus, data = covid_flu_table)%&gt;%
+tidy(conf.int = TRUE)
 ```
 
 ```
-## # A tibble: 1 × 12
-##   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC
-##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1     0.651         0.644  15.4      89.6 1.49e-12     1  -207.  419.  425.
-## # … with 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;
+## # A tibble: 2 × 7
+##   term        estimate std.error statistic  p.value conf.low conf.high
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)   42691.     2619.     16.3  3.77e-27   37480.    47903.
+## 2 covidstatus  -25191.     6846.     -3.68 4.22e- 4  -38814.   -11568.
 ```
 
 ---
