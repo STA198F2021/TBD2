@@ -166,7 +166,7 @@ covid_flu_table <- flu_table %>%
   group_by(seasonweek)
 ```
 
-#Preparing for Modelling
+#Preparing for Testing
 
 ```{r deaths linegraph 2, echo = FALSE, warning = FALSE}
 covid_flu_table %>%
@@ -181,17 +181,17 @@ covid_flu_table %>%
 
 ---
 
-#Model
+#Statistical Testing
 
-```{r model}
+```{r t-test, echo = FALSE, warning = FALSE}
 covid_flu_table<-covid_flu_table%>%
   group_by(season)%>%
   slice_max(order_by = total_flu_deaths, n = 10)%>%
   ungroup()
-lm(total_flu_deaths ~ covidstatus, data = covid_flu_table)%>%
-tidy(conf.int = TRUE)
-lm(total_flu_patients ~ covidstatus, data = covid_flu_table)%>%
-tidy(conf.int = TRUE)
+# t-test for number of Influenza Death pre-covid and during covid
+t.test(covid_flu_table$total_flu_deaths~covid_flu_table$covidstatus,var.equal=FALSE)
+# t-test for number of Influenza Hospitalizations pre-covid and during covid
+t.test(covid_flu_table$total_flu_patients~covid_flu_table$covidstatus,var.equal=FALSE)
 ```
 
 ---
