@@ -271,14 +271,13 @@ merged_5_states%>%
   geom_point()+
   facet_wrap(~STATE)
 ```
-```{r}
-linear_reg()%>%
-  set_engine("lm")%>%
-  fit(`NUM INFLUENZA DEATHS`~`Stringency_Index`, data = merged_5_states)%>%
+
+```{r linear model stringency}
+lm(`NUM INFLUENZA DEATHS`~`Stringency_Index`, data = merged_5_states)%>%
   tidy(conf.int=TRUE)
 ```
 
-```{r}
+```{r linear model stringency states chunk 2}
 merged_5_states%>%
   filter(YEAR == 2020)%>%
   ggplot(aes(`Stringency_Index`, `NUM INFLUENZA DEATHS`))+
@@ -287,18 +286,16 @@ merged_5_states%>%
 ```
 
 
-```{r}
-e334c6f2616fd61ad8a1e472ee6bb9525dc16c6c
+```{r fl creation}
 fl<-flu_ili%>%
   mutate(afterCovid = ifelse((YEAR==2021 | YEAR ==2020), 1,0))
 t.test(fl$`NUM INFLUENZA DEATHS`~fl$afterCovid,var.equal=FALSE)
 ```
 
-```{r}
+```{r t test deaths}
 t.test(fl$`NUM PNEUMONIA DEATHS`~fl$afterCovid,var.equal=FALSE)
 ```
 
-```{r}
+```{r t test hosp}
 t.test(fl$`%UNWEIGHTED ILI`~fl$afterCovid,var.equal=FALSE)
 ```
-
