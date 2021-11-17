@@ -116,7 +116,7 @@ covid_flu_table %>%
        y = 'Week of Season',
        color = 'Season')
 ```
-In the line graph above, some of the issues posed by the data in finding statistical significance can be observed. Peaks and patterns do not line up consistently across years and the current definition of seasons includes many weeks that are not actually affected by the flu. Restricting the definition of a season by only taking the top weeks for deaths or hospitalization in each season can allow for more effective significance testing.
+In the line graph above, some of the issues posed by the data in finding statistical significance can be observed. Peaks and patterns do not line up consistently across years and the current definition of seasons includes many weeks that are not actually affected by the flu. Restricting the definition of a season by only taking the top weeks for deaths or hospitalization in each season can allow for more effective significance testing. This figure also shows that the distribution of the data across weeks in a season is approximately normal, which means that it may be used for modelling.
 ```{r model, echo=FALSE, warning=FALSE}
 covid_flu_table<-covid_flu_table%>%
   group_by(season)%>%
@@ -127,28 +127,15 @@ tidy(conf.int = TRUE)
 lm(total_flu_patients ~ covidstatus, data = covid_flu_table)%>%
 tidy(conf.int = TRUE)
 ```
+
 Based on the model, there is a statistically significant difference between the number of deaths at the peak 10 weeks of each season when comparing weeks in non-COVID times with weeks in COVID-affected times. The p value for covidstatus is 1.19x10^-6, which is less than .05 and the confidence interval of -686.46 to -309.41 does not include the null hypothesis of 0, which would indicate no difference in the data. The model indicates that moving from non-COVID to COVID time correlates with a decrease in deaths of 497.94 from the estimate of 527.69. Based on this data, something that has happened during the pandemic has most likely caused a decrease in deaths due to the flu. The model also indicates that there was a statistically significant decrease in hospitalizations when compared to the norm, by 25,190.74, from an estimate of 42,691.49, with a p value of 4.22x10^-4, which is less than 0.05, and a confidence interval of -38,813.74 to -11,567.73, which does not include the null hypothesis of 0. This is less than the difference in deaths, in terms of significance, but it is interesting because the hospitalizations were similar to past hospitalization levels, but the model still determine that its difference was significance due to the upward trend in hospitalization in recent years. The data for deaths was not similar to anything recorded in the past for the time period tested.
 
-
-
-#Comparison of lockdowns and flu levels by state/comparison of flu levels by lockdown stringency (?)
-compare states/lockdown and mask levels (stringency index) to flu hospitalizations or deaths
-  consider using a model
-    test which model fits best
-    test for and explain statistical significance
-talk about why flu levels may be lower
-  more protective measures against respiratory illnesses
-  possibly more issues going to hospital for flu/collecting data
-  is the population most affected by flu being reduced by COVID?
-  
-
-```{r t-test}
+```{r t-test, echo = FALSE, warning = FALSE}
 # t-test for number of Influenza Death pre-covid and during covid
 t.test(covid_flu_table$total_flu_deaths~covid_flu_table$covidstatus,var.equal=FALSE)
 # t-test for number of Influenza Hospitalizations pre-covid and during covid
 t.test(covid_flu_table$total_flu_patients~covid_flu_table$covidstatus,var.equal=FALSE)
 ```
-Description about the t-test values after the modeling - Harry Writes
 
 
 
@@ -263,7 +250,7 @@ lmodel<-lm(`%UNWEIGHTED ILI`~`Stringency_Index`, data = merged_5_states)
 lmodel%>%
   tidy(conf.int=TRUE)
 ```
-A similar linear regression model was fitted using the percentage of influenza infections out of total patients as a response variable. The result also shows that the stringency index has negative correlation to the response variable. This result is statistically significant because the p-value is $2.02^{10-28}$, which is less than 0.05 and the confidence interval does not include the value zero. 
+A similar linear regression model was fitted using the percentage of influenza infections out of total patients as a response variable. The result also shows that the stringency index has negative correlation to the response variable. This result is statistically significant because the p-value is $2.02 x 10^{-28}$, which is less than 0.05 and the confidence interval does not include the value zero, which is the null hypothesis. 
 
 The results of the two linear models indeed support our initial hypothesis that the number of influenza infection is highly related to the COVID-19 restrictions. 
 
