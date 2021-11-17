@@ -1,7 +1,7 @@
 ---
 title: "Relationship between COVID-19 Restrictions and Influenza"
 subtitle: "In the United States"
-author: "Harris Upchurch, Biniam Garomsa, Philemon Hailemariam"
+author: "Phila's Filas (TBD2) <br> Harris Upchurch, Biniam Garomsa, Philemon Hailemariam"
 institute: "Duke University"
 date: "`r Sys.Date()`"
 output:
@@ -288,10 +288,8 @@ labels = c( "Stringency Index", "% Influenza Infections" ))
 
 
 ---
-# Linear Regression model using Stringency Index  
-
+# Linear Regression using Stringency Index  
 - A negative correlation exists between Stringency Index and number of deaths due to influenza. A linear regression model was chosen to further investigate this relationship.
-
 
 ```{r linear model, echo=FALSE, cache = FALSE}
 merged_5_states%>%
@@ -323,8 +321,6 @@ lmodel%>%
 # Conclusion 
 
 - The data demonstrates that the spread of influenza has been affected during the COVID-19 pandemic, and that this difference is explainable by the public health measures put in place to stop COVID-19.
-
-- The impact of the flu was reduced by being during the coronavirus pandemic  by increased stringency, when compared to the years before the COVID-19 pandemic.
 
 - One unexpected result was that the number of deaths appeared to be more significantly affected by these variables than the hospitalization rate.
 
