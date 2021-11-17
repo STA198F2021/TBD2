@@ -196,25 +196,109 @@ tidy(conf.int = TRUE)
 
 ---
 
-## Plots
+## Stringency Index vs Influenza infections and deaths
 
-```{r recode-species, echo = FALSE}
-# In this chunk I'm doing a bunch of analysis that I don't want to present 
-# in my slides. But I need the resulting data frame for a plot I want to present.
-penguins_modified <- penguins %>%
-  mutate(species = fct_other(species, keep = "Adelie"))
-```
+```{r clean, merge datasets, echo=FALSE, warning=FALSE, include=FALSE, cache = FALSE}
+# extract date from week 
+oxford_lockdown<-readr::read_csv(file = '~/R/TBD2/data/OxCGRT_US_latest.csv')
+flu_sec<-readr::read_csv(file = '~/R/TBD2/data/State_Custom_Data.csv')
+ilinet_sec <- readr::read_csv("~/R/TBD2/data/ILINet.csv")
+ox2 <- oxford_lockdown %>%
+  filter(!is.na(StringencyIndex) & !is.na(RegionName) & !(RegionName=="")) %>%
+  transform(Date = as.Date(as.character(Date), "%Y%m%d")) %>%
+  mutate(Year = format(Date, "%Y"))%>%
+  mutate(Week = strftime(Date, format= "%V"))%>%
+  group_by(CountryName, CountryCode, RegionName, RegionCode, Year, Week) %>%
+  summarize(Stringency_Index = mean(StringencyIndex))
 
-```{r plot-penguins, echo = FALSE, warning = FALSE, fig.alt = "Body mass vs. flipper lenght of Palmer Penguins for species Adelie and all the others combined together. There is a relatively strong, positive relationship between the two variables. The Adelie penguins are clustered together but they don't exhibit a different trend than the rest of the penguins."}
-# Code hidden with echo = FALSE
-# Uses modified penguins dataset from previous chunk
-# Play around with height and width until you're happy with the look
-ggplot(penguins_modified, aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
-  geom_point() + 
-  theme_minimal()
+
+flu2<-flu_sec%>%
+  mutate(Year = ifelse(WEEK>=40 & WEEK<=53, substr(SEASON,3,4),substr(SEASON,6,7)))%>%
+  mutate(Year = paste("20",Year,sep=""))
+
+# change data format
+ox2$Week<-as.numeric(ox2$Week)
+ox2$Year<-as.numeric(ox2$Year)
+flu2$WEEK<- as.numeric(flu2$WEEK)
+flu2$Year<- as.numeric(flu2$Year)
+ilinet_sec$YEAR<-as.numeric(ilinet_sec$YEAR)
+ilinet_sec$WEEK<- as.numeric(ilinet_sec$WEEK)
+
+# merge flu& ili report data
+flu_ili <- left_join(flu2,ilinet_sec,by=c("SUB AREA" ="REGION","WEEK","Year"="YEAR"))
+flu_ili<-flu_ili%>% rename("YEAR" = "Year","STATE" ="SUB AREA")
+
+
+ ox2<-ox2%>%
+   rename("STATE" = "RegionName","YEAR"= "Year","WEEK" = "Week")
+ merged <-left_join(ox2, flu_ili,by = c("STATE","WEEK","YEAR"))
+
+ 
+ merged2<-merged%>%
+  select("YEAR","WEEK","Stringency_Index", 'NUM INFLUENZA DEATHS','NUM PNEUMONIA DEATHS',
+         'NUM COVID-19 DEATHS','TOTAL DEATHS','%UNWEIGHTED ILI')
+merged2<- subset(merged2, select = -c(CountryName,CountryCode,RegionCode ))
+# select five states for visualization
+merged_5_states <- merged2%>%
+  filter(STATE %in% c('California', 'Texas','Florida','New York','Illinois'))
 ```
 
 ---
+
+```{r plot model, echo=FALSE, warning=FALSE, cache = FALSE}
+merged_5_states %>%
+  filter(YEAR == 2020) %>%
+ggplot()+
+geom_smooth(aes(x = WEEK, y = Stringency_Index, color = "Stringency_Index"), se=FALSE)+
+  geom_smooth(aes(x = WEEK, y = `NUM INFLUENZA DEATHS`, color = "NUM INFLUENZA DEATHS"), se=FALSE)+
+  facet_wrap(~STATE)+
+  labs(title =' Stringency Index vs Influenza Deaths 2020',y="")+
+    scale_color_manual(name = "Color",
+values = c( "Stringency_Index" = "blue", "NUM INFLUENZA DEATHS" = "red"),
+labels = c( "Stringency Index", "Influenza Deaths" ))
+```
+
+
+---
+# Linear Regression model using Stringency Index  
+
+```{r linear model, echo=FALSE, cache = FALSE}
+merged_5_states%>%
+  filter(YEAR == 2020)%>%
+  ggplot(aes(`Stringency_Index`, `NUM INFLUENZA DEATHS`))+
+  geom_smooth(method = "lm")+
+  geom_point()+
+  facet_wrap(~STATE)
+```
+- A negative correlation exists between Stringency Index and number of deaths due to influenza. A linear regression model was chosen to further investigate this relationship.
+
+---
+
+# Statistical Results of the Linear Regresssion Model
+
+- This linear regression model is fitted with stringency index as an explanatory variable and the weekly number of deaths due to influenza as a response variable.
+```{r lmodel, echo=FALSE}
+lmodel<-lm(`NUM INFLUENZA DEATHS`~`Stringency_Index`, data = merged_5_states)
+lmodel%>%
+  tidy(conf.int=TRUE)
+```
+- A similar linear regression model is fitted using the percentage of influenza infections out of total patients as a response variable. 
+```{r model patients stringency,echo=FALSE, cache = FALSE}
+lmodel<-lm(`%UNWEIGHTED ILI`~`Stringency_Index`, data = merged_5_states)
+lmodel%>%
+  tidy(conf.int=TRUE)
+```
+
+---
+# Conclusion 
+
+- The data demonstrates that the spread of influenza has been affected during the COVID-19 pandemic, and that this difference is explainable by the public health measures put in place to stop COVID-19.
+
+- The impact of the flu was reduced by being during the coronavirus pandemic  by increased stringency, when compared to the years before the COVID-19 pandemic.
+
+- One unexpected result was that the number of deaths appeared to be more significantly affected by these variables than the hospitalization rate.
+
+- The implications of this data could be explored further by comparing effects of measures across countries and globally, as well as comparing the effects of these measures on other diseases.
 
 ## Plot and text
 
