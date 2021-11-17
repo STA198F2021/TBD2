@@ -132,7 +132,6 @@ ggplot(aggflu_ili, aes(x = yearweek)) +
        y = 'Influenza deaths')
 ```
 ]
----
 ```{r table, echo = FALSE, warning = FALSE}
 #table
 flu_table<-aggflu_ili %>%
@@ -150,7 +149,10 @@ flu_table<-aggflu_ili %>%
 #   summarize(total_flu_deaths = sum(total_flu_deaths), 
 #             total_flu_patients = sum(total_flu_patients))
 ```
-.pull-left[
+
+---
+
+
 ```{r linegraph 2, echo = FALSE, warning = FALSE}
 covid_flu_table <- flu_table %>%
   mutate(covidstatus = ifelse(season == '2020-2021' | season == '2021-2022', 1, 0))%>%
@@ -160,8 +162,9 @@ covid_flu_table <- flu_table %>%
   ungroup()%>%
   group_by(seasonweek)
 ```
-]
-.pull-right[
+
+#Preparing for Modelling
+
 ```{r deaths linegraph 2, echo = FALSE, warning = FALSE}
 covid_flu_table %>%
   ggplot( aes(x = seasonweek, color = season)) +
@@ -172,18 +175,20 @@ covid_flu_table %>%
        y = 'Week of Season',
        color = 'Season')
 ```
-]
-
 
 ---
 
-## Code
+#Model
 
-```{r boring-regression}
-# a boring regression
-model <- lm(dist ~ speed, data = cars)
-tidy(model)
-glance(model)
+```{r model}
+covid_flu_table<-covid_flu_table%>%
+  group_by(season)%>%
+  slice_max(order_by = total_flu_deaths, n = 10)%>%
+  ungroup()
+lm(total_flu_deaths ~ covidstatus, data = covid_flu_table)%>%
+tidy(conf.int = TRUE)
+lm(total_flu_patients ~ covidstatus, data = covid_flu_table)%>%
+tidy(conf.int = TRUE)
 ```
 
 ---
