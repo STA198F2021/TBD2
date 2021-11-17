@@ -257,13 +257,15 @@ merged_5_states <- merged2%>%
 merged_5_states %>%
   filter(YEAR == 2020) %>%
 ggplot()+
-geom_smooth(aes(x = WEEK, y = Stringency_Index, color = "Stringency_Index"), se=FALSE, formula = y ~ x, method = "loess")+
-  geom_smooth(aes(x = WEEK, y = `NUM INFLUENZA DEATHS`, color = "NUM INFLUENZA DEATHS"), se=FALSE, formula = y ~ x, method = "loess")+
+geom_smooth(aes(x = WEEK, y = Stringency_Index, color = "Stringency_Index"), se=FALSE,
+            formula = y ~ x,method = "loess")+
+  geom_smooth(aes(x = WEEK, y = `NUM INFLUENZA DEATHS`, color = "NUM INFLUENZA DEATHS"), se=FALSE, formula = y ~ x,method = "loess")+
   facet_wrap(~STATE)+
   labs(title =' Stringency Index vs Influenza Deaths 2020',y="")+
     scale_color_manual(name = "Color",
 values = c( "Stringency_Index" = "blue", "NUM INFLUENZA DEATHS" = "red"),
-labels = c( "Stringency Index", "Influenza Deaths" ))
+labels = c( "Stringency Index", "Influenza Deaths" ))+
+     ylim(c(0, 100))
 ```
 ---
 
