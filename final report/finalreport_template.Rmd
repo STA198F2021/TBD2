@@ -25,8 +25,10 @@ library(tidyverse)
 library(viridis)
 ilinet <-read.csv("~/R/TBD2/data/ILINet.csv", header=TRUE)
 flu<-readr::read_csv(file = '~/R/TBD2/data/State_Custom_Data.csv')
+```
 
 
+```{r seasons compare, echo=FALSE, warning=FALSE}
 oxford_lockdown<-readr::read_csv(file = '~/R/TBD2/data/OxCGRT_US_latest.csv')
 flu_sec<-readr::read_csv(file = '~/R/TBD2/data/State_Custom_Data.csv')
 ilinet_sec <- readr::read_csv("~/R/TBD2/data/ILINet.csv")
