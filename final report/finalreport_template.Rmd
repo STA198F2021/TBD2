@@ -202,19 +202,6 @@ merged_5_states <- merged2%>%
 
 
 
-
-```{r echo=FALSE, warning=FALSE}
-merged_5_states%>%
-ggplot()+
-geom_smooth(aes(x = WEEK, y = Stringency_Index, color = as.factor(YEAR)), se=FALSE)+
-  facet_wrap(~STATE)+
-  labs(title = 'Stringency Index',
-  y = 'Stringency Index',
-    color ='Year')
-```
-
-
-
 ```{r echo=FALSE, warning=FALSE}
 merged_5_states %>%
   filter(YEAR == 2020) %>%
