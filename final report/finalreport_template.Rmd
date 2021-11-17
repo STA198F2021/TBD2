@@ -207,7 +207,7 @@ merged_5_states <- merged2%>%
 merged_5_states%>%
 ggplot()+
 geom_smooth(aes(x = WEEK, y = Stringency_Index, color = as.factor(YEAR)), se=FALSE)+
-  facet_wrap(~STATE)+
+  facet_wrap(~STATE, ncol = 5)+
   labs(title = 'Stringency Index',
   y = 'Stringency Index',
     color ='Year')
@@ -221,7 +221,7 @@ merged_5_states %>%
 ggplot()+
 geom_smooth(aes(x = WEEK, y = Stringency_Index, color = "Stringency_Index"), se=FALSE)+
   geom_smooth(aes(x = WEEK, y = `NUM INFLUENZA DEATHS`, color = "NUM INFLUENZA DEATHS"), se=FALSE)+
-  facet_wrap(~STATE)+
+  facet_wrap(~STATE, ncol = 5)+
   labs(title =' Stringency Index vs Influenza Deaths 2020',y="")+
     scale_color_manual(name = "Color",
 values = c( "Stringency_Index" = "blue", "NUM INFLUENZA DEATHS" = "red"),
@@ -234,7 +234,7 @@ merged_5_states %>%
 ggplot()+
 geom_smooth(aes(x = WEEK, y = log(Stringency_Index), color = 'Stringency_Index'), se=FALSE)+
   geom_smooth(aes(x = WEEK, y = log(`%UNWEIGHTED ILI`), color ="% Influenza Infections"),se=FALSE)+
-  facet_wrap(~STATE)+
+  facet_wrap(~STATE, ncol=5)+
   labs(title ='Percentage of Infleunza Infections in Total Patients 2020',y="",
        subtitle="Log normalized"
   ) +
@@ -252,7 +252,7 @@ merged_5_states %>%
 ggplot()+
 geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
   geom_smooth(aes(x = WEEK, y = `NUM INFLUENZA DEATHS`), color ='red')+
-  facet_wrap(~STATE)+
+  facet_wrap(~STATE, ncol = 5)+
   labs(title =' Stringency Index vs Influenza Deaths 2021',
   )
 ```
@@ -266,7 +266,7 @@ merged_5_states %>%
 ggplot()+
 geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
   geom_smooth(aes(x = WEEK, y = `%UNWEIGHTED ILI`*10), color ='red')+
-  facet_wrap(~STATE)+
+  facet_wrap(~STATE, ncol = 5)+
   labs(title =' Stringency Index vs hospitalization percentage 2021')
 ```
 
@@ -276,7 +276,7 @@ merged_5_states %>%
 ggplot()+
 geom_smooth(aes(x = WEEK, y = log(Stringency_Index)), color = 'blue')+
   geom_smooth(aes(x = WEEK, y = log(`NUM COVID-19 DEATHS`)), color ='red')+
-  facet_wrap(~STATE)+
+  facet_wrap(~STATE, ncol = 5)+
   labs(title =' Stringency Index vs Covid Deaths 2020')
 ```
 
@@ -286,7 +286,7 @@ merged_5_states %>%
 ggplot()+
 geom_smooth(aes(x = WEEK, y = log(Stringency_Index)), color = 'blue')+
   geom_smooth(aes(x = WEEK, y = log(`NUM COVID-19 DEATHS`)), color ='red')+
-  facet_wrap(~STATE)+
+  facet_wrap(~STATE, ncol = 5)+
   labs(title =' Stringency Index vs Covid Deaths 2021')
 ```
 
@@ -296,7 +296,7 @@ merged_5_states%>%
   ggplot(aes(`Stringency_Index`, `NUM INFLUENZA DEATHS`))+
   geom_smooth(method = "lm")+
   geom_point()+
-  facet_wrap(~STATE)
+  facet_wrap(~STATE, ncol = 5)
 ```
 
 
