@@ -11,11 +11,11 @@ date: "11/16/2021"
 output: pdf_document
 
 ---
-#Introduction
+# Introduction
   
   Starting in 2020, public health measures against the spread of respiratory disease were taken in an effort to slow or prevent the spread of COVID-19. These measures were much more significant than in previous years, as the primary strategies against the spread of respiratory disease in the United States are typically vaccination and encouraging frequent hand-washing, but measures against COVID-19 included shutting down large parts of society and moving online, as well as enforcement or encouragement of face coverings and vaccinations when available. This report studies how these public health measures may have affected the spread of other infectious disease by focusing on influenza hospitalizations and deaths in the United States, as the flu is one of the most common and deadly diseases each year in the U.S., and shares many characteristics with COVID-19.
 
-#Flu seasons during the COVID-19 Pandemic vs. past flu seasons
+# Flu seasons during the COVID-19 Pandemic vs. past flu seasons
 
 Have flu deaths and hospitalizations changed during the COVID-19 pandemic compared to past years? If so, is this difference statistically significant?
 ```{r data, include = FALSE}
@@ -136,11 +136,17 @@ t.test(covid_flu_table$total_flu_deaths~covid_flu_table$covidstatus,var.equal=FA
 # t-test for number of Influenza Hospitalizations pre-covid and during covid
 t.test(covid_flu_table$total_flu_patients~covid_flu_table$covidstatus,var.equal=FALSE)
 ```
+<<<<<<< HEAD
 These t-tests confirm the results of the models that the impact of the flu has been different during the pandemic as compared to before. The data was already confirmed to be approximately normal, so the t-test compares the distributions of data before and during the pandemic. The means are clearly much less for both deaths and hospitalizations during the pandemic, although the death difference is greater. The p-values of $2.2x10^{-16}$ and $8.17x10^{-12}$ are both less than .05, and the confidence intervals of 420-576 and 18950-31432 do not include the null hypothesis of 0, confirming the results of the model that there is a statistically significant difference during the pandemic in the impact of the flu.
 
 Our hypothesis is  that the change in number of deaths and hospitalizations due to influenza is highly related to the restrictions enforced as a result of the COVID-19 pandemic. In order to examine this hypothesis, a variable that quantitatively describes the restriction policies imposed during the pandemic was used from the Oxford COVID-19 policy tracker data.This variable is called `Stringency Index` and is calculated as a mean of sub-indices, which describe restriction policies such as school closures, work space closing, cancellation of public events, public and international travel controls and mask and vaccination policy. 
 ''' reference.https://www.bsg.ox.ac.uk/sites/default/files/Calculation%20and%20presentation%20of%20the%20Stringency%20Index.pdf
 ''' 
+=======
+
+
+Our hypothesis is  that the change in number of deaths and hospitalizations due to influenza is highly related to the restrictions enforced as a result of the COVID-19 pandemic. In order to examine this hypothesis, a variable that quantitatively describes the restriction policies imposed during the pandemic was used from the Oxford COVID-19 policy tracker data. This variable is called `Stringency Index` and is calculated as a mean of sub-indices, which describe restriction policies such as school closures, work space closing, cancellation of public events, public and international travel controls and mask and vaccination policy ("COVID-19 Government Response Tracker" 2021).
+>>>>>>> d24cabc30f89a6a37a36919efdf65d5969870cbf
 
 This Stringency index was calculated on a daily basis. The weekly average indices were used to merge this data with the influenza data. In order to visualize and better understand the relationship between the stringency index and influenza infections, we selected the five US states with the most COVID-19 cases recorded.
 
@@ -256,3 +262,7 @@ The results of the two linear models indeed support our initial hypothesis that 
 The data demonstrate that the spread of influenza has been affected during the COVID-19 pandemic, and that this difference is explainable by the public health measures put in place to stop COVID-19. Both influenza deaths and influenza hospitalizations were predictable to a statistically significant degree when using linear models by the binary presence of the COVID-19 pandemic, indicating that the flu seasons during COVID were different from previous flu seasons. Additionally, within COVID, influenza deaths and hospitalizations were able to be explained by the explanatory variable of stringency index from Oxford University, a variable which draws on various anti-coronavirus measures to create a general measure of lockdowns, masking policies, and related measures. Each of these linear model terms had p values of less than .05 and confidence intervals which did not include the null hypothesis of 0 difference, indicating statistical significance. Each of the terms also had negative coefficients, the impact of the flu was reduced by being during the coronavirus pandemic and by increased stringency, when compared to normal years or no stringency measures.
 These results were expected, as influenza is a respiratory virus which spreads similarly to COVID-19, and many of the practices measured by the stringency index would logically also affect COVID-19. However, one unexpected result was that the number of deaths appeared to be more significantly affected by these variables than the hospitalization rate. The mortality of flu viruses varies from year to year, as observed in the data from previous years, but one potential reason for this difference is that hospitalization from COVID and the flu are non-exclusive, and dying from COVID and the flu are exclusive. This means that while measures related to the coronavirus may have prevented the spread of the flu, coronavirus itself likely did not, but populations which were already susceptible to dying to the flu may have been either reduced by coronavirus before they could be affected by the flu, or they were uniquely protective in a way that populations that were likely to be hospitalized but not die were not.
 The implications of this data could be explored further by comparing effects of measures across countries and globally, as well as comparing the effects of these measures on other diseases. Social distancing may have been less effective in many low-income countries or more effective in countries with collectivist cultures, and it may have prevented the spread of STIs or TB, while promoting mental health issues. These data could be combined with rates of different diseases to generate similar models and find the effects of lockdown on our health as a whole.
+
+# References
+
+"COVID-19 Government Response Tracker". 2021. Bsg.Ox.Ac.Uk. https://www.bsg.ox.ac.uk/research/research-projects/covid-19-government-response-tracker.
