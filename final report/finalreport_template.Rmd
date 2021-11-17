@@ -23,6 +23,9 @@ Have flu deaths and hospitalizations changed during the COVID-19 pandemic compar
 library(dplyr)
 library(tidyverse)
 library(viridis)
+library(broom)
+library(modelr)
+library(purrr)
 ilinet <-read.csv("~/R/TBD2/data/ILINet.csv", header=TRUE)
 flu<-readr::read_csv(file = '~/R/TBD2/data/State_Custom_Data.csv')
 oxford_lockdown<-readr::read_csv(file = '~/R/TBD2/data/OxCGRT_US_latest.csv')
@@ -60,7 +63,7 @@ flu_table<-aggflu_ili %>%
   )))))))))
 ```
 
-```{r firstlinegraph}
+```{r firstlinegraph, echo = false, warning = false}
 #line graph
 flu_table%>%
   ggplot( aes(x = yearweek, fill = season, alpha =as.character(covidstatus))) +
@@ -97,9 +100,6 @@ flu_table %>%
 ```
 Based on the data, the hospitalizations for the 2020-2021 flu season were similar to several seasons in past years, but noticeably lower than the most recent 2017-2019 seasons, with a total of 917,038 hospitalizations, which was somewhat higher than the 2013-2017 seasons, but about half of the most recent season. The 2021-2022 season is not complete, but appears to be on track to be similar to years before the 2017-2019 period, like the 2020-2021 season. The deaths of both the 2020-2021 season and the 2021-2022 season were and have been noticeably less than any of the previous years used for this comparison. The 2020-2021 season had 25.9% of the deaths of the next least deadly year and 11.1% of the average deaths (7,543.14) of previous seasons, and the 2021-2022 season is on track to follow a similar pattern. These findings indicate some noticeable differences between influenza effects before and during COVID-19, but statistical tests should be done to prove and quantify their difference. Due to the variance between weeks within season, a test should be used which tests for significance either across seasons in total or mean or within analogous weeks across seasons. However, because the peak and distribution within each season is not consistent, comparing along weekly lines causes some issues. This significantly reduces the sample size that may be used within a test from approximately 400 weeks to about 9 seasons. One potential way to adjust for the seasonal patterns is to select the most impactful weeks from each season, so that there are more data points for each category than only using seasons, but the range of values does not include many weeks where the flu is not present. Additionally, the 2021-2022 season must be adjusted to be able to be fairly compared and used for statistical significance. The mean will not allow comparison on its own, due to the peak pattern of each season, so the best way to compare 2021-2022 to other seasons is most likely to cut off each season to the first few weeks, which would further reduce sample size. The statistical test that is used will test for how the binary variable for whether or not the COVID-19 pandemic is occurring explains the observations for the numerical variables of influenza hospitalizations and deaths.
 ```{r linegraph 2, echo=FALSE, warning=FALSE}
-library(broom)
-library(modelr)
-library(purrr)
 covid_flu_table <- flu_table %>%
   mutate(covidstatus = ifelse(season == '2020-2021' | season == '2021-2022', 1, 0))%>%
   filter(season !='2021-2022')%>%
@@ -203,7 +203,7 @@ merged_5_states <- merged2%>%
 
 
 
-```{r echo=FALSE, warning=FALSE}
+```{r facetwrapstringency, echo=FALSE, warning=FALSE}
 merged_5_states%>%
 ggplot()+
 geom_smooth(aes(x = WEEK, y = Stringency_Index, color = as.factor(YEAR)), se=FALSE)+
@@ -310,7 +310,6 @@ lmodel%>%
 The result of our model shows that the stringency index has negative correlation to the number of deaths due to influenza. This result is statistically significant because the p-value  is 
 $1.2^{10-21}$, which is less than 0.5 and the confidence interval does not include the value zero. Thus, an increase of 1 in the value of stringency index corresponds to an average decrease of 0.23 in the weekly number of deaths due to influenza. When the stringency index is zero, which means no restrictions, the weekly number of deaths due to influenza is 15.38.
 
-<<<<<<< HEAD
 ```{r linear model stringency states chunk 2}
 merged_5_states%>%
   filter(YEAR == 2020)%>%
