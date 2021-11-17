@@ -1,10 +1,15 @@
 ---
+output:
+  pdf_document: default
+  html_document: default
+---
+---
 title: "Final Report"
 subtitle: "due November 16, 2021 by 11:59 PM "
 author: "Harris Upchurch, Biniam Garomsa, Philemon Hailemariam"
 date: "11/16/2021"
 output: pdf_document
----
+
 Outline:
 
 #Introduction
@@ -21,6 +26,12 @@ library(tidyverse)
 library(viridis)
 ilinet <-read.csv("~/R/TBD2/data/ILINet.csv", header=TRUE)
 flu<-readr::read_csv(file = '~/R/TBD2/data/State_Custom_Data.csv')
+
+
+oxford_lockdown<-readr::read_csv(file = '~/R/TBD2/data/OxCGRT_US_latest.csv')
+flu_sec<-readr::read_csv(file = '~/R/TBD2/data/State_Custom_Data.csv')
+ilinet_sec <- readr::read_csv("~/R/TBD2/data/ILINet.csv")
+
 #data merging
 flu2<-flu%>%
   mutate(Year = ifelse(WEEK>=40 & WEEK<=53, substr(SEASON,3,4),substr(SEASON,6,7)))%>%
@@ -118,10 +129,24 @@ talk about why flu levels may be lower
   possibly more issues going to hospital for flu/collecting data
   is the population most affected by flu being reduced by COVID?
   
+```{r t-test}
+# t-test for number of Influenza Death pre-covid and during covid
+t.test(covid_flu_table$total_flu_deaths~covid_flu_table$covidstatus,var.equal=FALSE)
+# t-test for number of Influenza Hospitalizations pre-covid and during covid
+t.test(covid_flu_table$total_flu_patients~covid_flu_table$covidstatus,var.equal=FALSE)
+```
+Description about the t-test values after the modeling - Harry Writes
+
+
+Our hypothesis is  that the change in number of deaths and hospitalizations due to influenza is highly related to the restrictions enforced as a result of the COVID-19 pandemic. In order to examine this hypothesis, a variable that quantitatively describes the restriction policies imposed during the pandemic was used.This variable is called `Stringency Index` and is calculated as a mean of sub-indices, which describe restriction policies such as school closures, work space closing, cancellation of public events, public and international travel controls and mask and vaccination policy. 
+'''
+The detailed calculation of this variable can be found in this reference.https://www.bsg.ox.ac.uk/sites/default/files/Calculation%20and%20presentation%20of%20the%20Stringency%20Index.pdf
+''' 
+
+
+
 ```{r clean, merge datasets, echo=FALSE, warning=FALSE}
-oxford_lockdown<-readr::read_csv(file = '~/R/TBD2/data/OxCGRT_US_latest.csv')
-flu_sec<-readr::read_csv(file = '~/R/TBD2/data/State_Custom_Data.csv')
-ilinet_sec <- readr::read_csv("~/R/TBD2/data/ILINet.csv")
+
 
 # extract date from week 
 ox2 <- oxford_lockdown %>%
@@ -161,7 +186,7 @@ flu_ili<-flu_ili%>% rename("YEAR" = "Year","STATE" ="SUB AREA")
 merged2<- subset(merged2, select = -c(CountryName,CountryCode,RegionCode ))
 # select five states for visualization
 merged_5_states <- merged2%>%
-  filter(STATE %in% c('California', 'Texas','Florida','New York','North Carolina'))
+  filter(STATE %in% c('California', 'Texas','Florida','New York','Illinois'))
 ```
 
 
@@ -216,15 +241,15 @@ ggplot()+
 geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
   geom_smooth(aes(x = WEEK, y = `%UNWEIGHTED ILI`*10), color ='red')+
   facet_wrap(~STATE)+
-  labs(title =' Stringency Index vs hospitalizaiton percentage 2021')
+  labs(title =' Stringency Index vs hospitalization percentage 2021')
 ```
 
 ```{r echo=FALSE}
 merged_5_states %>%
   filter(YEAR == 2020) %>%
 ggplot()+
-geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
-  geom_smooth(aes(x = WEEK, y = `NUM COVID-19 DEATHS`/30), color ='red')+
+geom_smooth(aes(x = WEEK, y = log(Stringency_Index)), color = 'blue')+
+  geom_smooth(aes(x = WEEK, y = log(`NUM COVID-19 DEATHS`)), color ='red')+
   facet_wrap(~STATE)+
   labs(title =' Stringency Index vs Covid Deaths 2020')
 ```
@@ -233,14 +258,36 @@ geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
 merged_5_states %>%
   filter(YEAR == 2021) %>%
 ggplot()+
-geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
-  geom_smooth(aes(x = WEEK, y = `NUM COVID-19 DEATHS`/100), color ='red')+
+geom_smooth(aes(x = WEEK, y = log(Stringency_Index)), color = 'blue')+
+  geom_smooth(aes(x = WEEK, y = log(`NUM COVID-19 DEATHS`)), color ='red')+
   facet_wrap(~STATE)+
-  labs(title =' Stringency Index vs Covid Deaths 2021',
-  )
+  labs(title =' Stringency Index vs Covid Deaths 2021')
+```
+```{r}
+merged_5_states%>%
+  filter(YEAR == 2020)%>%
+  ggplot(aes(`Stringency_Index`, `NUM INFLUENZA DEATHS`))+
+  geom_smooth(method = "lm")+
+  geom_point()+
+  facet_wrap(~STATE)
+```
+```{r}
+linear_reg()%>%
+  set_engine("lm")%>%
+  fit(`NUM INFLUENZA DEATHS`~`Stringency_Index`, data = merged_5_states)%>%
+  tidy(conf.int=TRUE)
 ```
 
-```{r echo=FALSE, warning=FALSE}
+```{r}
+merged_5_states%>%
+  filter(YEAR == 2020)%>%
+  ggplot(aes(`Stringency_Index`, `NUM INFLUENZA DEATHS`))+
+  geom_smooth(method = "lm")+
+  geom_point()
+```
+
+
+```{r}
 fl<-flu_ili%>%
   mutate(afterCovid = ifelse((YEAR==2021 | YEAR ==2020), 1,0))
 t.test(fl$`NUM INFLUENZA DEATHS`~fl$afterCovid,var.equal=FALSE)
