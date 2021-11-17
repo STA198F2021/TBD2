@@ -84,6 +84,7 @@ flu_table%>%
        fill = 'Season',
        alpha = 'Covid Pandemic Status') +
       theme_minimal()
+
 ```
 
 ```{r table, echo=FALSE, warning=FALSE}
