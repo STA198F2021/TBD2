@@ -1,7 +1,7 @@
 ---
 title: "Relationship between COVID-19 Restrictions and Influenza"
 subtitle: "In the United States"
-author: "Phila's Filas (TBD2) <br> Harris Upchurch, Biniam Garomsa, Philemon Hailemariam"
+author: "Harris Upchurch, Biniam Garomsa, Philemon Hailemariam"
 institute: "Duke University"
 date: "`r Sys.Date()`"
 output:
