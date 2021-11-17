@@ -136,9 +136,7 @@ t.test(covid_flu_table$total_flu_deaths~covid_flu_table$covidstatus,var.equal=FA
 # t-test for number of Influenza Hospitalizations pre-covid and during covid
 t.test(covid_flu_table$total_flu_patients~covid_flu_table$covidstatus,var.equal=FALSE)
 ```
-
-
-
+These t-tests confirm the results of the models that the impact of the flu has been different during the pandemic as compared to before. The data was already confirmed to be approximately normal, so the t-test compares the distributions of data before and during the pandemic. The means are clearly much less for both deaths and hospitalizations during the pandemic, although the death difference is greater. The p-values of $2.2x10^{-16}$ and $8.17x10^{-12}$ are both less than .05, and the confidence intervals of 420-576 and 18950-31432 do not include the null hypothesis of 0, confirming the results of the model that there is a statistically significant difference during the pandemic in the impact of the flu.
 
 Our hypothesis is  that the change in number of deaths and hospitalizations due to influenza is highly related to the restrictions enforced as a result of the COVID-19 pandemic. In order to examine this hypothesis, a variable that quantitatively describes the restriction policies imposed during the pandemic was used from the Oxford COVID-19 policy tracker data.This variable is called `Stringency Index` and is calculated as a mean of sub-indices, which describe restriction policies such as school closures, work space closing, cancellation of public events, public and international travel controls and mask and vaccination policy. 
 ''' reference.https://www.bsg.ox.ac.uk/sites/default/files/Calculation%20and%20presentation%20of%20the%20Stringency%20Index.pdf
