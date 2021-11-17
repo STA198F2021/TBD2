@@ -51,6 +51,16 @@ aggflu_ili <- flu_ili %>%
   transform(yearweek = as.numeric(yearweek))%>%
   mutate(covidstatus = ifelse(yearweek>=202009,1,0))%>%
   transform(yearweek = rank(yearweek, ties.method = 'min'))
+flu_table<-aggflu_ili %>%
+  mutate(season = ifelse(yearweek >=1 & yearweek <= 52, '2013-2014', 
+                  ifelse(yearweek >=53 & yearweek <= 105, '2014-2015',
+                  ifelse(yearweek >=106 & yearweek <= 157, '2015-2016',
+                  ifelse(yearweek >=158 & yearweek <= 209, '2016-2017',
+                  ifelse(yearweek >=210 & yearweek <= 261, '2017-2018',
+                  ifelse(yearweek >=262 & yearweek <= 313, '2018-2019',
+                  ifelse(yearweek >=314 & yearweek <= 365, '2019-2020',
+                  ifelse(yearweek >=366 & yearweek <= 418, '2020-2021','2021-2022'
+  )))))))))
 #line graph
 flu_table%>%
   ggplot( aes(x = yearweek, fill = season, alpha =as.character(covidstatus))) +
@@ -79,16 +89,6 @@ flu_table%>%
 
 ```{r table, echo=FALSE, warning=FALSE}
 #table
-flu_table<-aggflu_ili %>%
-  mutate(season = ifelse(yearweek >=1 & yearweek <= 52, '2013-2014', 
-                  ifelse(yearweek >=53 & yearweek <= 105, '2014-2015',
-                  ifelse(yearweek >=106 & yearweek <= 157, '2015-2016',
-                  ifelse(yearweek >=158 & yearweek <= 209, '2016-2017',
-                  ifelse(yearweek >=210 & yearweek <= 261, '2017-2018',
-                  ifelse(yearweek >=262 & yearweek <= 313, '2018-2019',
-                  ifelse(yearweek >=314 & yearweek <= 365, '2019-2020',
-                  ifelse(yearweek >=366 & yearweek <= 418, '2020-2021','2021-2022'
-  )))))))))
 flu_table %>%
   group_by(season) %>%
   summarize(total_flu_deaths = sum(total_flu_deaths), 
@@ -303,9 +303,7 @@ merged_5_states%>%
 The scatter plot of stringency index and number of deaths due to influenza, as shown above, indicates that a negative correlation exists.  A linear regression model was chosen to 
 further investigate this relationship. This linear regression model was fit with stringency index as an explanatory variable and the weekly number of deaths due to influenza as a response variable.
 ```{r}
-lmodel<-linear_reg()%>%
-  set_engine("lm")%>%
-  fit(`NUM INFLUENZA DEATHS`~`Stringency_Index`, data = merged_5_states)
+lmodel<-lm(`NUM INFLUENZA DEATHS`~`Stringency_Index`, data = merged_5_states)
 lmodel%>%
   tidy(conf.int=TRUE)
 ```
@@ -334,9 +332,7 @@ t.test(fl$`NUM PNEUMONIA DEATHS`~fl$afterCovid,var.equal=FALSE)
 
 
 ```{r}
-lmodel<-linear_reg()%>%
-  set_engine("lm")%>%
-  fit(`%UNWEIGHTED ILI`~`Stringency_Index`, data = merged_5_states)
+lmodel<-lm(`%UNWEIGHTED ILI`~`Stringency_Index`, data = merged_5_states)
 lmodel%>%
   tidy(conf.int=TRUE)
 ```
