@@ -10,8 +10,7 @@ author: "Harris Upchurch, Biniam Garomsa, Philemon Hailemariam"
 date: "11/16/2021"
 output: pdf_document
 
-Outline:
-
+---
 #Introduction
   
   Starting in 2020, public health measures against the spread of respiratory disease were taken in an effort to slow or prevent the spread of COVID-19. These measures were much more significant than in previous years, as the primary strategies against the spread of respiratory disease in the United States are typically vaccination and encouraging frequent hand-washing, but measures against COVID-19 included shutting down large parts of society and moving online, as well as enforcement or encouragement of face coverings and vaccinations when available. This report studies how these public health measures may have affected the spread of other infectious disease by focusing on influenza hospitalizations and deaths in the United States, as the flu is one of the most common and deadly diseases each year in the U.S., and shares many characteristics with COVID-19.
@@ -19,15 +18,17 @@ Outline:
 #Flu seasons during the COVID-19 Pandemic vs. past flu seasons
 
 Have flu deaths and hospitalizations changed during the COVID-19 pandemic compared to past years? If so, is this difference statistically significant?
-```{r seasons compare, echo=FALSE, warning=FALSE, show_col_types = FALSE}
+```{r seasons compare, echo=FALSE, warning=FALSE}
 #data/libraries
 library(dplyr)
 library(tidyverse)
 library(viridis)
 ilinet <-read.csv("~/R/TBD2/data/ILINet.csv", header=TRUE)
 flu<-readr::read_csv(file = '~/R/TBD2/data/State_Custom_Data.csv')
+```
 
 
+```{r seasons compare, echo=FALSE, warning=FALSE}
 oxford_lockdown<-readr::read_csv(file = '~/R/TBD2/data/OxCGRT_US_latest.csv')
 flu_sec<-readr::read_csv(file = '~/R/TBD2/data/State_Custom_Data.csv')
 ilinet_sec <- readr::read_csv("~/R/TBD2/data/ILINet.csv")
