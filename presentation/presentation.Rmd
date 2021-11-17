@@ -288,15 +288,17 @@ labels = c( "Stringency Index", "% Influenza Infections" ))
 ---
 # Linear Regression model using Stringency Index  
 
+- A negative correlation exists between Stringency Index and number of deaths due to influenza. A linear regression model was chosen to further investigate this relationship.
+
+
 ```{r linear model, echo=FALSE, cache = FALSE}
 merged_5_states%>%
   filter(YEAR == 2020)%>%
   ggplot(aes(`Stringency_Index`, `NUM INFLUENZA DEATHS`))+
-  geom_smooth(method = "lm",formula = y ~ x)+
+  geom_smooth(method = "lm",se = FALSE, formula = y ~ x)+
   geom_point()+
   facet_wrap(~STATE)
 ```
-- A negative correlation exists between Stringency Index and number of deaths due to influenza. A linear regression model was chosen to further investigate this relationship.
 
 ---
 
