@@ -330,7 +330,7 @@ t.test(fl$`NUM PNEUMONIA DEATHS`~fl$afterCovid,var.equal=FALSE)
 ```
 
 
-```{r}
+```{r model patients stringency}
 lmodel<-lm(`%UNWEIGHTED ILI`~`Stringency_Index`, data = merged_5_states)
 lmodel%>%
   tidy(conf.int=TRUE)
