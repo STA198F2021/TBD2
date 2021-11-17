@@ -13,13 +13,13 @@ output: pdf_document
 Outline:
 
 #Introduction
-
-Starting in 2020, public health measures against the spread of respiratory disease were taken in an effort to slow or prevent the spread of COVID-19. These measures were much more significant than in previous years, as the primary strategies against the spread of respiratory disease in the United States are typically vaccination and encouraging frequent hand-washing, but measures against COVID-19 included shutting down large parts of society and moving online, as well as enforcement or encouragement of face coverings and vaccinations when available. This report studies how these public health measures may have affected the spread of other infectious disease by focusing on influenza hospitalizations and deaths in the United States, as the flu is one of the most common and deadly diseases each year in the U.S., and shares many characteristics with COVID-19.
+  
+  Starting in 2020, public health measures against the spread of respiratory disease were taken in an effort to slow or prevent the spread of COVID-19. These measures were much more significant than in previous years, as the primary strategies against the spread of respiratory disease in the United States are typically vaccination and encouraging frequent hand-washing, but measures against COVID-19 included shutting down large parts of society and moving online, as well as enforcement or encouragement of face coverings and vaccinations when available. This report studies how these public health measures may have affected the spread of other infectious disease by focusing on influenza hospitalizations and deaths in the United States, as the flu is one of the most common and deadly diseases each year in the U.S., and shares many characteristics with COVID-19.
 
 #Flu seasons during the COVID-19 Pandemic vs. past flu seasons
 
 Have flu deaths and hospitalizations changed during the COVID-19 pandemic compared to past years? If so, is this difference statistically significant?
-```{r seasons compare}
+```{r seasons compare, echo=FALSE, warning=FALSE, show_col_types = FALSE}
 #data/libraries
 library(dplyr)
 library(tidyverse)
@@ -52,23 +52,31 @@ aggflu_ili <- flu_ili %>%
   mutate(covidstatus = ifelse(yearweek>=202009,1,0))%>%
   transform(yearweek = rank(yearweek, ties.method = 'min'))
 #line graph
-ggplot(aggflu_ili, aes(x = yearweek)) +
-  geom_area(aes(y = total_flu_patients), alpha = 0.5) +
-  geom_area(aes(y = covidstatus*120000), alpha = 0.2) +
+flu_table%>%
+  ggplot( aes(x = yearweek, fill = season, alpha =as.character(covidstatus))) +
+  geom_area(aes(y = total_flu_patients)) +
+  scale_alpha_discrete(range = c(0.5, 1.0)) +
   labs(title = 'U.S. Influenza Patients',
        subtitle = 'CDC FLuView, 2013-2021',
        x = 'Weeks since beginning of 2013',
-       y = 'Patients with influenza-like symptoms (excluding other diagnoses)')
-ggplot(aggflu_ili, aes(x = yearweek)) +
-  geom_area(aes(y = total_flu_deaths), alpha = 0.5) +
-  geom_area(aes(y = covidstatus*1600), alpha = 0.2) +
+       y = 'Patients with influenza-like symptoms',
+       fill = 'Season',
+       alpha = 'Covid Pandemic Status') +
+  theme_minimal()
+flu_table%>%
+  ggplot( aes(x = yearweek, fill = season, alpha =as.character(covidstatus))) +
+  geom_area(aes(y = total_flu_deaths)) +
+  scale_alpha_discrete(range = c(0.5, 1.0)) +
   labs(title = 'U.S. Influenza Deaths',
        subtitle = 'CDC FLuView, 2013-2021',
        x = 'Weeks since beginning of 2013',
-       y = 'Influenza deaths')
+       y = 'Influenza deaths',
+       fill = 'Season',
+       alpha = 'Covid Pandemic Status') +
+      theme_minimal()
 ```
 
-```{r table}
+```{r table, echo=FALSE, warning=FALSE}
 #table
 flu_table<-aggflu_ili %>%
   mutate(season = ifelse(yearweek >=1 & yearweek <= 52, '2013-2014', 
@@ -87,7 +95,7 @@ flu_table %>%
   print()
 ```
 Based on the data, the hospitalizations for the 2020-2021 flu season were similar to several seasons in past years, but noticeably lower than the most recent 2017-2019 seasons, with a total of 917,038 hospitalizations, which was somewhat higher than the 2013-2017 seasons, but about half of the most recent season. The 2021-2022 season is not complete, but appears to be on track to be similar to years before the 2017-2019 period, like the 2020-2021 season. The deaths of both the 2020-2021 season and the 2021-2022 season were and have been noticeably less than any of the previous years used for this comparison. The 2020-2021 season had 25.9% of the deaths of the next least deadly year and 11.1% of the average deaths (7,543.14) of previous seasons, and the 2021-2022 season is on track to follow a similar pattern. These findings indicate some noticeable differences between influenza effects before and during COVID-19, but statistical tests should be done to prove and quantify their difference. Due to the variance between weeks within season, a test should be used which tests for significance either across seasons in total or mean or within analogous weeks across seasons. However, because the peak and distribution within each season is not consistent, comparing along weekly lines causes some issues. This significantly reduces the sample size that may be used within a test from approximately 400 weeks to about 9 seasons. One potential way to adjust for the seasonal patterns is to select the most impactful weeks from each season, so that there are more data points for each category than only using seasons, but the range of values does not include many weeks where the flu is not present. Additionally, the 2021-2022 season must be adjusted to be able to be fairly compared and used for statistical significance. The mean will not allow comparison on its own, due to the peak pattern of each season, so the best way to compare 2021-2022 to other seasons is most likely to cut off each season to the first few weeks, which would further reduce sample size. The statistical test that is used will test for how the binary variable for whether or not the COVID-19 pandemic is occurring explains the observations for the numerical variables of influenza hospitalizations and deaths.
-```{r linegraph 2}
+```{r linegraph 2, echo=FALSE, warning=FALSE}
 library(broom)
 library(modelr)
 library(purrr)
@@ -108,7 +116,7 @@ covid_flu_table %>%
        color = 'Season')
 ```
 In the line graph above, some of the issues posed by the data in finding statistical significance can be observed. Peaks and patterns do not line up consistently across years and the current definition of seasons includes many weeks that are not actually affected by the flu. Restricting the definition of a season by only taking the top weeks for deaths or hospitalization in each season can allow for more effective significance testing.
-```{r model}
+```{r model, echo=FALSE, warning=FALSE}
 covid_flu_table<-covid_flu_table%>%
   group_by(season)%>%
   slice_max(order_by = total_flu_deaths, n = 10)%>%
@@ -139,12 +147,14 @@ t.test(covid_flu_table$total_flu_patients~covid_flu_table$covidstatus,var.equal=
 Description about the t-test values after the modeling - Harry Writes
 
 
-Our hypothesis is  that the change in number of deaths and hospitalizations due to influenza is highly related to the restrictions enforced as a result of the COVID-19 pandemic. In order to examine this hypothesis, a variable that quantitatively describes the restriction policies imposed during the pandemic was used.This variable is called `Stringency Index` and is calculated as a mean of sub-indices, which describe restriction policies such as school closures, work space closing, cancellation of public events, public and international travel controls and mask and vaccination policy. 
+Our hypothesis is  that the change in number of deaths and hospitalizations due to influenza is highly related to the restrictions enforced as a result of the COVID-19 pandemic. In order to examine this hypothesis, a variable that quantitatively describes the restriction policies imposed during the pandemic was used from the Oxford COVID-19 policy tracker data.This variable is called `Stringency Index` and is calculated as a mean of sub-indices, which describe restriction policies such as school closures, work space closing, cancellation of public events, public and international travel controls and mask and vaccination policy. 
 '''
 The detailed calculation of this variable can be found in this reference.https://www.bsg.ox.ac.uk/sites/default/files/Calculation%20and%20presentation%20of%20the%20Stringency%20Index.pdf
 ''' 
 
+This Stringency index was calculated on a daily basis. The weekly average indices were used to merge this data with the influenza data.
 
+In order to visualize and better understand the relationship between the stringency index and influenza infections, we selected the five US states with the most COVID-19 cases recorded.
 
 ```{r clean, merge datasets, echo=FALSE, warning=FALSE}
 
@@ -191,10 +201,11 @@ merged_5_states <- merged2%>%
 
 
 
-```{r}
+
+```{r echo=FALSE, warning=FALSE}
 merged_5_states%>%
 ggplot()+
-geom_smooth(aes(x = WEEK, y = Stringency_Index, color = as.factor(YEAR)))+
+geom_smooth(aes(x = WEEK, y = Stringency_Index, color = as.factor(YEAR)), se=FALSE)+
   facet_wrap(~STATE)+
   labs(title = 'Stringency Index',
   y = 'Stringency Index',
@@ -202,18 +213,39 @@ geom_smooth(aes(x = WEEK, y = Stringency_Index, color = as.factor(YEAR)))+
 ```
 
 
-```{r}
+
+```{r echo=FALSE, warning=FALSE}
 merged_5_states %>%
   filter(YEAR == 2020) %>%
 ggplot()+
-geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
-  geom_smooth(aes(x = WEEK, y = `NUM INFLUENZA DEATHS`), color ='red')+
+geom_smooth(aes(x = WEEK, y = Stringency_Index, color = "Stringency_Index"), se=FALSE)+
+  geom_smooth(aes(x = WEEK, y = `NUM INFLUENZA DEATHS`, color = "NUM INFLUENZA DEATHS"), se=FALSE)+
   facet_wrap(~STATE)+
-  labs(title =' Stringency Index vs Influenza Deaths 2020',
-  )
+  labs(title =' Stringency Index vs Influenza Deaths 2020',y="")+
+    scale_color_manual(name = "Color",
+values = c( "Stringency_Index" = "blue", "NUM INFLUENZA DEATHS" = "red"),
+labels = c( "Stringency Index", "Influenza Deaths" ))
 ```
 
-```{r}
+```{r echo=FALSE, warning=FALSE}
+merged_5_states %>%
+  filter(YEAR == 2020 & !is.na(`%UNWEIGHTED ILI`)) %>%
+ggplot()+
+geom_smooth(aes(x = WEEK, y = log(Stringency_Index), color = 'Stringency_Index'), se=FALSE)+
+  geom_smooth(aes(x = WEEK, y = log(`%UNWEIGHTED ILI`), color ="% Influenza Infections"),se=FALSE)+
+  facet_wrap(~STATE)+
+  labs(title ='Percentage of Infleunza Infections in Total Patients 2020',y="",
+       subtitle="Log normalized"
+  ) +
+  scale_color_manual(name = "Color",
+values = c( "Stringency_Index" = "blue", "% Influenza Infections" = "red"),
+labels = c( "Stringency Index", "% Influenza Infections" ))
+```
+The stringency index was zero until COVID-19 restrictions began in the few early months in 2020.
+According to the plots above, the number of deaths and hospitalizations due to influenza started to decrease as the stringency index began to increase in early 2020. Once the stringency index has hit a peak, which means a very strict lock-down, the number of influenza infections were relatively low and stable. This implies the existence of a relationship between COVID-19 restrictions and influenza infections. Since our data does not include hospitalization report from Florida, we only show the remaining four states in the hospitalization's plot. 
+
+
+```{r echo=FALSE, warning=FALSE}
 merged_5_states %>%
   filter(YEAR == 2021) %>%
 ggplot()+
@@ -224,17 +256,10 @@ geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
   )
 ```
 
-```{r}
-merged_5_states %>%
-  filter(YEAR == 2020 & !is.na(`%UNWEIGHTED ILI`)) %>%
-ggplot()+
-geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
-  geom_smooth(aes(x = WEEK, y = `%UNWEIGHTED ILI`*10), color ='red')+
-  facet_wrap(~STATE)+
-  labs(title =' Stringency Index vs hospitalizaiton percentage 2020',
-  )
-```
-```{r}
+
+
+
+```{r echo=FALSE, warning=FALSE}
 merged_5_states %>%
   filter(YEAR == 2021 & !is.na(`%UNWEIGHTED ILI`) & STATE !='Florida') %>%
 ggplot()+
@@ -244,7 +269,7 @@ geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
   labs(title =' Stringency Index vs hospitalization percentage 2021')
 ```
 
-```{r}
+```{r echo=FALSE}
 merged_5_states %>%
   filter(YEAR == 2020) %>%
 ggplot()+
@@ -254,7 +279,7 @@ geom_smooth(aes(x = WEEK, y = log(Stringency_Index)), color = 'blue')+
   labs(title =' Stringency Index vs Covid Deaths 2020')
 ```
 
-```{r}
+```{r echo=FALSE, warning=FALSE}
 merged_5_states %>%
   filter(YEAR == 2021) %>%
 ggplot()+
@@ -263,6 +288,7 @@ geom_smooth(aes(x = WEEK, y = log(Stringency_Index)), color = 'blue')+
   facet_wrap(~STATE)+
   labs(title =' Stringency Index vs Covid Deaths 2021')
 ```
+
 ```{r}
 merged_5_states%>%
   filter(YEAR == 2020)%>%
@@ -272,11 +298,20 @@ merged_5_states%>%
   facet_wrap(~STATE)
 ```
 
-```{r linear model stringency}
-lm(`NUM INFLUENZA DEATHS`~`Stringency_Index`, data = merged_5_states)%>%
+
+The scatter plot of stringency index and number of deaths due to influenza, as shown above, indicates that a negative correlation exists.  A linear regression model was chosen to 
+further investigate this relationship. This linear regression model was fit with stringency index as an explanatory variable and the weekly number of deaths due to influenza as a response variable.
+```{r}
+lmodel<-linear_reg()%>%
+  set_engine("lm")%>%
+  fit(`NUM INFLUENZA DEATHS`~`Stringency_Index`, data = merged_5_states)
+lmodel%>%
   tidy(conf.int=TRUE)
 ```
+The result of our model shows that the stringency index has negative correlation to the number of deaths due to influenza. This result is statistically significant because the p-value  is 
+$1.2^{10-21}$, which is less than 0.5 and the confidence interval does not include the value zero. Thus, an increase of 1 in the value of stringency index corresponds to an average decrease of 0.23 in the weekly number of deaths due to influenza. When the stringency index is zero, which means no restrictions, the weekly number of deaths due to influenza is 15.38.
 
+<<<<<<< HEAD
 ```{r linear model stringency states chunk 2}
 merged_5_states%>%
   filter(YEAR == 2020)%>%
@@ -296,6 +331,19 @@ t.test(fl$`NUM INFLUENZA DEATHS`~fl$afterCovid,var.equal=FALSE)
 t.test(fl$`NUM PNEUMONIA DEATHS`~fl$afterCovid,var.equal=FALSE)
 ```
 
+
+```{r}
+lmodel<-linear_reg()%>%
+  set_engine("lm")%>%
+  fit(`%UNWEIGHTED ILI`~`Stringency_Index`, data = merged_5_states)
+lmodel%>%
+  tidy(conf.int=TRUE)
+```
+A similar linear regression model was fitted using the percentage of influenza infections out of total patients as a response variable. The result also shows that the stringency index has negative correlation to the response variable. This result is statistically significant because the p-value is $2.02^{10-28}$, which is less than 0.5 and the confidence interval does not include the value zero. 
+
 ```{r t test hosp}
 t.test(fl$`%UNWEIGHTED ILI`~fl$afterCovid,var.equal=FALSE)
 ```
+
+The results of the two linear models indeed support our initial hypothesis that the number of influenza infection is highly related to the COVID-19 restrictions. 
+
