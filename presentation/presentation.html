@@ -4,7 +4,7 @@
     <title>Relationship between COVID-19 Restrictions and Influenza</title>
     <meta charset="utf-8" />
     <meta name="author" content="Phila’s Filas (TBD2)   Harris Upchurch, Biniam Garomsa, Philemon Hailemariam" />
-    <meta name="date" content="2021-11-16" />
+    <meta name="date" content="2021-11-17" />
     <script src="libs/header-attrs-2.11/header-attrs.js"></script>
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
@@ -16,7 +16,7 @@ class: center, middle, inverse, title-slide
 ## In the United States
 ### Phila’s Filas (TBD2) <br> Harris Upchurch, Biniam Garomsa, Philemon Hailemariam
 ### Duke University
-### 2021-11-16
+### 2021-11-17
 
 ---
 
@@ -31,7 +31,7 @@ class: center, middle, inverse, title-slide
 
 class: inverse, middle, center
 
-# COVID-19 and Influenza
+# Initial Questions
 
 ---
 
@@ -66,13 +66,13 @@ class: inverse, middle, center
 --
 
 - We then plotted these data over the years to prepare the data to test for significance.
+
 .pull-left[
 &lt;img src="presentation_files/figure-html/seasons compare-1.png" width="110%" /&gt;
 ]
 .pull-right[
 &lt;img src="presentation_files/figure-html/deaths linegraph-1.png" width="110%" /&gt;
 ]
-
 
 ---
 
@@ -120,13 +120,72 @@ tidy(conf.int = TRUE)
 
 ---
 
-## Plots
+## Stringency Index 
 
+- describes restriction policies such as school closures, work space closing,
+mask and vaccination policy
 
+`$${index}=\frac{1}{k}\sum_{i=1}^kI_j$$`
 
-&lt;img src="presentation_files/figure-html/plot-penguins-1.png" title="Body mass vs. flipper lenght of Palmer Penguins for species Adelie and all the others combined together. There is a relatively strong, positive relationship between the two variables. The Adelie penguins are clustered together but they don't exhibit a different trend than the rest of the penguins." alt="Body mass vs. flipper lenght of Palmer Penguins for species Adelie and all the others combined together. There is a relatively strong, positive relationship between the two variables. The Adelie penguins are clustered together but they don't exhibit a different trend than the rest of the penguins." width="70%" /&gt;
+- a good measure for strictness of restrictions due to COVID-19 pandemic
+
 
 ---
+
+
+
+&lt;img src="presentation_files/figure-html/plot model-1.png" width="70%" /&gt;
+---
+
+
+
+&lt;img src="presentation_files/figure-html/unnamed-chunk-1-1.png" width="70%" /&gt;
+
+
+---
+# Linear Regression model using Stringency Index  
+
+
+```
+## `geom_smooth()` using formula 'y ~ x'
+```
+
+&lt;img src="presentation_files/figure-html/linear model-1.png" width="70%" /&gt;
+- A negative correlation exists between Stringency Index and number of deaths due to influenza. A linear regression model was chosen to further investigate this relationship.
+
+---
+
+# Statistical Results of the Linear Regresssion Model
+
+- This linear regression model is fitted with stringency index as an explanatory variable and the weekly number of deaths due to influenza as a response variable.
+
+```
+## # A tibble: 2 × 7
+##   term             estimate std.error statistic  p.value conf.low conf.high
+##   &lt;chr&gt;               &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)        15.4      1.10        14.0 2.50e-37   13.2      17.5  
+## 2 Stringency_Index   -0.232    0.0231     -10.1 1.24e-21   -0.278    -0.187
+```
+- A similar linear regression model is fitted using the percentage of influenza infections out of total patients as a response variable. 
+
+```
+## # A tibble: 2 × 7
+##   term             estimate std.error statistic  p.value conf.low conf.high
+##   &lt;chr&gt;               &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)        4.21     0.201        20.9 7.30e-65   3.81      4.61  
+## 2 Stringency_Index  -0.0490   0.00407     -12.0 2.02e-28  -0.0570   -0.0410
+```
+
+---
+# Conclusion 
+
+- The data demonstrates that the spread of influenza has been affected during the COVID-19 pandemic, and that this difference is explainable by the public health measures put in place to stop COVID-19.
+
+- The impact of the flu was reduced by being during the coronavirus pandemic  by increased stringency, when compared to the years before the COVID-19 pandemic.
+
+- One unexpected result was that the number of deaths appeared to be more significantly affected by these variables than the hospitalization rate.
+
+- The implications of this data could be explored further by comparing effects of measures across countries and globally, as well as comparing the effects of these measures on other diseases.
 
 ## Plot and text
 
@@ -135,7 +194,7 @@ tidy(conf.int = TRUE)
 - goes here
 ]
 .pull-right[
-&lt;img src="presentation_files/figure-html/unnamed-chunk-1-1.png" width="100%" /&gt;
+&lt;img src="presentation_files/figure-html/unnamed-chunk-2-1.png" width="100%" /&gt;
 ]
 
 ---
@@ -249,7 +308,7 @@ background-image: url(img/watercolour_sys02_img32_percolate.jpg)
 You can write LaTeX math expressions inside a pair of dollar signs, e.g. &amp;#36;\alpha+\beta$ renders `\(\alpha+\beta\)`. You can use the display style with double dollar signs:
 
 ```
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
+$$\bar{index}=\frac{1}{k}\sum_{i=1}^kI_j$$
 ```
 
 `$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$`

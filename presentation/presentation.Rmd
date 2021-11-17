@@ -196,8 +196,14 @@ tidy(conf.int = TRUE)
 
 ---
 
-## Stringency Index vs Influenza infections and deaths
+## Stringency Index 
 
+- describes restriction policies such as school closures, work space closing,
+mask and vaccination policy
+
+$${index}=\frac{1}{k}\sum_{i=1}^kI_j$$
+
+- a good measure for strictness of restrictions due to COVID-19 pandemic
 ```{r clean, merge datasets, echo=FALSE, warning=FALSE, include=FALSE, cache = FALSE}
 # extract date from week 
 oxford_lockdown<-readr::read_csv(file = '~/R/TBD2/data/OxCGRT_US_latest.csv')
@@ -245,17 +251,37 @@ merged_5_states <- merged2%>%
 
 ---
 
+
+
 ```{r plot model, echo=FALSE, warning=FALSE, cache = FALSE}
 merged_5_states %>%
   filter(YEAR == 2020) %>%
 ggplot()+
-geom_smooth(aes(x = WEEK, y = Stringency_Index, color = "Stringency_Index"), se=FALSE)+
-  geom_smooth(aes(x = WEEK, y = `NUM INFLUENZA DEATHS`, color = "NUM INFLUENZA DEATHS"), se=FALSE)+
+geom_smooth(aes(x = WEEK, y = Stringency_Index, color = "Stringency_Index"), se=FALSE, formula = y ~ x, method = "loess")+
+  geom_smooth(aes(x = WEEK, y = `NUM INFLUENZA DEATHS`, color = "NUM INFLUENZA DEATHS"), se=FALSE, formula = y ~ x, method = "loess")+
   facet_wrap(~STATE)+
   labs(title =' Stringency Index vs Influenza Deaths 2020',y="")+
     scale_color_manual(name = "Color",
 values = c( "Stringency_Index" = "blue", "NUM INFLUENZA DEATHS" = "red"),
 labels = c( "Stringency Index", "Influenza Deaths" ))
+```
+---
+
+
+
+```{r echo=FALSE, warning=FALSE,cache = FALSE}
+merged_5_states %>%
+  filter(YEAR == 2020 & !is.na(`%UNWEIGHTED ILI`)) %>%
+ggplot()+
+geom_smooth(aes(x = WEEK, y = log(Stringency_Index), color = 'Stringency_Index'), se=FALSE, formula = y ~ x, method = "loess")+
+  geom_smooth(aes(x = WEEK, y = log(`%UNWEIGHTED ILI`), color ="% Influenza Infections"),se=FALSE, formula = y ~ x, method = "loess")+
+  facet_wrap(~STATE)+
+  labs(title ='Percentage of Infleunza Infections in Total Patients 2020',y="",
+       subtitle="Log normalized"
+  ) +
+  scale_color_manual(name = "Color",
+values = c( "Stringency_Index" = "blue", "% Influenza Infections" = "red"),
+labels = c( "Stringency Index", "% Influenza Infections" ))
 ```
 
 
@@ -353,7 +379,7 @@ background-image: url(img/watercolour_sys02_img32_percolate.jpg)
 You can write LaTeX math expressions inside a pair of dollar signs, e.g. &#36;\alpha+\beta$ renders $\alpha+\beta$. You can use the display style with double dollar signs:
 
 ```
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
+$$\bar{index}=\frac{1}{k}\sum_{i=1}^kI_j$$
 ```
 
 $$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
