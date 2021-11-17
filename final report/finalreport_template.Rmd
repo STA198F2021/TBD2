@@ -129,6 +129,7 @@ talk about why flu levels may be lower
   possibly more issues going to hospital for flu/collecting data
   is the population most affected by flu being reduced by COVID?
   
+
 ```{r t-test}
 # t-test for number of Influenza Death pre-covid and during covid
 t.test(covid_flu_table$total_flu_deaths~covid_flu_table$covidstatus,var.equal=FALSE)
@@ -148,7 +149,6 @@ This Stringency index was calculated on a daily basis. The weekly average indice
 In order to visualize and better understand the relationship between the stringency index and influenza infections, we selected the five US states with the most COVID-19 cases recorded.
 
 ```{r clean, merge datasets, echo=FALSE, warning=FALSE}
-
 
 # extract date from week 
 ox2 <- oxford_lockdown %>%
@@ -311,7 +311,6 @@ lmodel<-linear_reg()%>%
 lmodel%>%
   tidy(conf.int=TRUE)
 ```
-
 A similar linear regression model was fitted using the percentage of influenza infections out of total patients as a response variable. The result also shows that the stringency index has negative correlation to the response variable. This result is statistically significant because the p-value is $2.02^{10-28}$, which is less than 0.5 and the confidence interval does not include the value zero. 
 
 The results of the two linear models indeed support our initial hypothesis that the number of influenza infection is highly related to the COVID-19 restrictions. 
