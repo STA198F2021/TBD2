@@ -56,7 +56,7 @@ style_solarized_light(
 
 class: inverse, middle, center
 
-# COVID-19 and Influenza
+# Initial Questions
 
 ---
 
@@ -90,8 +90,7 @@ include_graphics("img/cdc influenza.png")
 --
 
 - We then plotted these data over the years to prepare the data to test for significance.
-.pull-left[
-```{r seasons compare, echo = FALSE, warning = FALSE, out.width = '110%'}
+```{r table, echo = FALSE, warning = FALSE}
 #data merging
 flu2<-flu%>%
   mutate(Year = ifelse(WEEK>=40 & WEEK<=53, substr(SEASON,3,4),substr(SEASON,6,7)))%>%
@@ -110,30 +109,7 @@ aggflu_ili <- flu_ili %>%
   summarize(total_flu_patients = sum(total_flu),total_flu_deaths = sum(`NUM INFLUENZA DEATHS`))%>%
   transform(yearweek = as.numeric(yearweek))%>%
   mutate(covidstatus = ifelse(yearweek>=202009,1,0))%>%
-  transform(yearweek = rank(yearweek, ties.method = 'min'))
-#line graph
-ggplot(aggflu_ili, aes(x = yearweek)) +
-  geom_area(aes(y = total_flu_patients), alpha = 0.4) +
-  geom_area(aes(y = covidstatus*120000), alpha = 0.2) +
-  labs(title = 'U.S. Influenza Patients',
-       subtitle = 'CDC FLuView, 2013-2021',
-       x = 'Weeks since beginning of 2013',
-       y = 'Patients with influenza-like symptoms')
-```
-]
-.pull-right[
-```{r deaths linegraph, echo = FALSE, warning = FALSE, out.width = '110%'}
-ggplot(aggflu_ili, aes(x = yearweek)) +
-  geom_area(aes(y = total_flu_deaths), alpha = 0.4) +
-  geom_area(aes(y = covidstatus*1600), alpha = 0.2) +
-  labs(title = 'U.S. Influenza Deaths',
-       subtitle = 'CDC FLuView, 2013-2021',
-       x = 'Weeks since beginning of 2013',
-       y = 'Influenza deaths')
-```
-]
-```{r table, echo = FALSE, warning = FALSE}
-#table
+  transform(yearweek = rank(yearweek, ties.method = 'min'))#table
 flu_table<-aggflu_ili %>%
   mutate(season = ifelse(yearweek >=1 & yearweek <= 52, '2013-2014', 
                   ifelse(yearweek >=53 & yearweek <= 105, '2014-2015',
@@ -144,11 +120,38 @@ flu_table<-aggflu_ili %>%
                   ifelse(yearweek >=314 & yearweek <= 365, '2019-2020',
                   ifelse(yearweek >=366 & yearweek <= 418, '2020-2021','2021-2022'
   )))))))))
-# flu_table %>%
-#   group_by(season) %>%
-#   summarize(total_flu_deaths = sum(total_flu_deaths), 
-#             total_flu_patients = sum(total_flu_patients))
 ```
+.pull-left[
+```{r seasons compare, echo = FALSE, warning = FALSE, out.width = '110%'}
+#line graph
+flu_table%>%
+  ggplot( aes(x = yearweek, fill = season, alpha =as.character(covidstatus))) +
+  geom_area(aes(y = total_flu_patients)) +
+  scale_alpha_discrete(range = c(0.5, 1.0)) +
+  labs(title = 'U.S. Influenza Patients',
+       subtitle = 'CDC FLuView, 2013-2021',
+       x = 'Weeks since beginning of 2013',
+       y = 'Patients with influenza-like symptoms',
+       fill = 'Season',
+       alpha = 'Covid Pandemic Status') +
+  theme_minimal()
+```
+]
+.pull-right[
+```{r deaths linegraph, echo = FALSE, warning = FALSE, out.width = '110%'}
+flu_table%>%
+  ggplot( aes(x = yearweek, fill = season, alpha =as.character(covidstatus))) +
+  geom_area(aes(y = total_flu_deaths)) +
+  scale_alpha_discrete(range = c(0.5, 1.0)) +
+  labs(title = 'U.S. Influenza Deaths',
+       subtitle = 'CDC FLuView, 2013-2021',
+       x = 'Weeks since beginning of 2013',
+       y = 'Influenza deaths',
+       fill = 'Season',
+       alpha = 'Covid Pandemic Status') +
+      theme_minimal()
+```
+]
 
 ---
 
