@@ -127,7 +127,8 @@ tidy(conf.int = TRUE)
 lm(total_flu_patients ~ covidstatus, data = covid_flu_table)%>%
 tidy(conf.int = TRUE)
 ```
-Based on the simple linear regression model, there is a statistically significant difference between the number of deaths at the peak 10 weeks of each season when comparing weeks in non-COVID times with weeks in COVID-affected times. The p value for covidstatus is 1.19x10^-6, which is less than .05 and the confidence interval of -686.46 to -309.41 does not include the null hypothesis of 0, which would indicate no difference in the data. The model indicates that moving from non-COVID to COVID time correlates with a decrease in deaths of 497.94 from the estimate of 527.69. Based on this data, something that has happened during the pandemic has most likely caused a decrease in deaths due to the flu. The model also indicates that there was a statistically significant decrease in hospitalizations when compared to the norm, by 25,190.74, from an estimate of 42,691.49, with a p value of 4.22x10^-4, which is less than 0.05, and a confidence interval of -38,813.74 to -11,567.73, which does not include the null hypothesis of 0. This is less than the difference in deaths, in terms of significance, but it is interesting because the hospitalizations were similar to past hospitalization levels, but the model still determine that its difference was significance due to the upward trend in hospitalization in recent years. The data for deaths was not similar to anything recorded in the past for the time period tested.
+
+Based on the model, there is a statistically significant difference between the number of deaths at the peak 10 weeks of each season when comparing weeks in non-COVID times with weeks in COVID-affected times. The p value for covidstatus is 1.19x10^-6, which is less than .05 and the confidence interval of -686.46 to -309.41 does not include the null hypothesis of 0, which would indicate no difference in the data. The model indicates that moving from non-COVID to COVID time correlates with a decrease in deaths of 497.94 from the estimate of 527.69. Based on this data, something that has happened during the pandemic has most likely caused a decrease in deaths due to the flu. The model also indicates that there was a statistically significant decrease in hospitalizations when compared to the norm, by 25,190.74, from an estimate of 42,691.49, with a p value of 4.22x10^-4, which is less than 0.05, and a confidence interval of -38,813.74 to -11,567.73, which does not include the null hypothesis of 0. This is less than the difference in deaths, in terms of significance, but it is interesting because the hospitalizations were similar to past hospitalization levels, but the model still determine that its difference was significance due to the upward trend in hospitalization in recent years. The data for deaths was not similar to anything recorded in the past for the time period tested.
 
 ```{r t-test, echo = FALSE, warning = FALSE}
 # t-test for number of Influenza Death pre-covid and during covid
@@ -137,16 +138,15 @@ t.test(covid_flu_table$total_flu_patients~covid_flu_table$covidstatus,var.equal=
 ```
 
 
+
+
 Our hypothesis is  that the change in number of deaths and hospitalizations due to influenza is highly related to the restrictions enforced as a result of the COVID-19 pandemic. In order to examine this hypothesis, a variable that quantitatively describes the restriction policies imposed during the pandemic was used from the Oxford COVID-19 policy tracker data.This variable is called `Stringency Index` and is calculated as a mean of sub-indices, which describe restriction policies such as school closures, work space closing, cancellation of public events, public and international travel controls and mask and vaccination policy. 
-'''
-The detailed calculation of this variable can be found in this reference.https://www.bsg.ox.ac.uk/sites/default/files/Calculation%20and%20presentation%20of%20the%20Stringency%20Index.pdf
+''' reference.https://www.bsg.ox.ac.uk/sites/default/files/Calculation%20and%20presentation%20of%20the%20Stringency%20Index.pdf
 ''' 
 
-This Stringency index was calculated on a daily basis. The weekly average indices were used to merge this data with the influenza data.
+This Stringency index was calculated on a daily basis. The weekly average indices were used to merge this data with the influenza data. In order to visualize and better understand the relationship between the stringency index and influenza infections, we selected the five US states with the most COVID-19 cases recorded.
 
-In order to visualize and better understand the relationship between the stringency index and influenza infections, we selected the five US states with the most COVID-19 cases recorded.
-
-```{r clean, merge datasets, echo=FALSE, warning=FALSE}
+```{r clean, merge datasets, echo=FALSE, warning=FALSE,include=FALSE}
 
 # extract date from week 
 ox2 <- oxford_lockdown %>%
@@ -192,17 +192,6 @@ merged_5_states <- merged2%>%
 
 
 
-```{r facetwrapstringency, echo=FALSE, warning=FALSE}
-merged_5_states%>%
-ggplot()+
-geom_smooth(aes(x = WEEK, y = Stringency_Index, color = as.factor(YEAR)), se=FALSE)+
-  facet_wrap(~STATE, ncol = 5)+
-  labs(title = 'Stringency Index',
-  y = 'Stringency Index',
-    color ='Year')
-```
-
-
 
 ```{r echo=FALSE, warning=FALSE}
 merged_5_states %>%
@@ -210,7 +199,7 @@ merged_5_states %>%
 ggplot()+
 geom_smooth(aes(x = WEEK, y = Stringency_Index, color = "Stringency_Index"), se=FALSE)+
   geom_smooth(aes(x = WEEK, y = `NUM INFLUENZA DEATHS`, color = "NUM INFLUENZA DEATHS"), se=FALSE)+
-  facet_wrap(~STATE, ncol = 5)+
+  facet_wrap(~STATE)+
   labs(title =' Stringency Index vs Influenza Deaths 2020',y="")+
     scale_color_manual(name = "Color",
 values = c( "Stringency_Index" = "blue", "NUM INFLUENZA DEATHS" = "red"),
@@ -223,7 +212,7 @@ merged_5_states %>%
 ggplot()+
 geom_smooth(aes(x = WEEK, y = log(Stringency_Index), color = 'Stringency_Index'), se=FALSE)+
   geom_smooth(aes(x = WEEK, y = log(`%UNWEIGHTED ILI`), color ="% Influenza Infections"),se=FALSE)+
-  facet_wrap(~STATE, ncol=5)+
+  facet_wrap(~STATE)+
   labs(title ='Percentage of Infleunza Infections in Total Patients 2020',y="",
        subtitle="Log normalized"
   ) +
@@ -235,57 +224,13 @@ The stringency index was zero until COVID-19 restrictions began in the few early
 According to the plots above, the number of deaths and hospitalizations due to influenza started to decrease as the stringency index began to increase in early 2020. Once the stringency index has hit a peak, which means a very strict lock-down, the number of influenza infections were relatively low and stable. This implies the existence of a relationship between COVID-19 restrictions and influenza infections. Since our data does not include hospitalization report from Florida, we only show the remaining four states in the hospitalization's plot. 
 
 
-```{r echo=FALSE, warning=FALSE}
-merged_5_states %>%
-  filter(YEAR == 2021) %>%
-ggplot()+
-geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
-  geom_smooth(aes(x = WEEK, y = `NUM INFLUENZA DEATHS`), color ='red')+
-  facet_wrap(~STATE, ncol = 5)+
-  labs(title =' Stringency Index vs Influenza Deaths 2021',
-  )
-```
-
-
-
-
-```{r echo=FALSE, warning=FALSE}
-merged_5_states %>%
-  filter(YEAR == 2021 & !is.na(`%UNWEIGHTED ILI`) & STATE !='Florida') %>%
-ggplot()+
-geom_smooth(aes(x = WEEK, y = Stringency_Index), color = 'blue')+
-  geom_smooth(aes(x = WEEK, y = `%UNWEIGHTED ILI`*10), color ='red')+
-  facet_wrap(~STATE, ncol = 5)+
-  labs(title =' Stringency Index vs hospitalization percentage 2021')
-```
-
-```{r echo=FALSE}
-merged_5_states %>%
-  filter(YEAR == 2020) %>%
-ggplot()+
-geom_smooth(aes(x = WEEK, y = log(Stringency_Index)), color = 'blue')+
-  geom_smooth(aes(x = WEEK, y = log(`NUM COVID-19 DEATHS`)), color ='red')+
-  facet_wrap(~STATE, ncol = 5)+
-  labs(title =' Stringency Index vs Covid Deaths 2020')
-```
-
-```{r echo=FALSE, warning=FALSE}
-merged_5_states %>%
-  filter(YEAR == 2021) %>%
-ggplot()+
-geom_smooth(aes(x = WEEK, y = log(Stringency_Index)), color = 'blue')+
-  geom_smooth(aes(x = WEEK, y = log(`NUM COVID-19 DEATHS`)), color ='red')+
-  facet_wrap(~STATE, ncol = 5)+
-  labs(title =' Stringency Index vs Covid Deaths 2021')
-```
-
 ```{r}
 merged_5_states%>%
   filter(YEAR == 2020)%>%
   ggplot(aes(`Stringency_Index`, `NUM INFLUENZA DEATHS`))+
   geom_smooth(method = "lm")+
   geom_point()+
-  facet_wrap(~STATE, ncol = 5)
+  facet_wrap(~STATE)
 ```
 
 
@@ -299,25 +244,6 @@ lmodel%>%
 The result of our model shows that the stringency index has negative correlation to the number of deaths due to influenza. This result is statistically significant because the p-value  is 
 $1.2^{10-21}$, which is less than 0.5 and the confidence interval does not include the value zero. Thus, an increase of 1 in the value of stringency index corresponds to an average decrease of 0.23 in the weekly number of deaths due to influenza. When the stringency index is zero, which means no restrictions, the weekly number of deaths due to influenza is 15.38.
 
-```{r linear model stringency states chunk 2}
-merged_5_states%>%
-  filter(YEAR == 2020)%>%
-  ggplot(aes(`Stringency_Index`, `NUM INFLUENZA DEATHS`))+
-  geom_smooth(method = "lm")+
-  geom_point()
-```
-
-
-```{r fl creation}
-fl<-flu_ili%>%
-  mutate(afterCovid = ifelse((YEAR==2021 | YEAR ==2020), 1,0))
-t.test(fl$`NUM INFLUENZA DEATHS`~fl$afterCovid,var.equal=FALSE)
-```
-
-```{r t test deaths}
-t.test(fl$`NUM PNEUMONIA DEATHS`~fl$afterCovid,var.equal=FALSE)
-```
-
 
 ```{r model patients stringency}
 lmodel<-lm(`%UNWEIGHTED ILI`~`Stringency_Index`, data = merged_5_states)
@@ -325,10 +251,6 @@ lmodel%>%
   tidy(conf.int=TRUE)
 ```
 A similar linear regression model was fitted using the percentage of influenza infections out of total patients as a response variable. The result also shows that the stringency index has negative correlation to the response variable. This result is statistically significant because the p-value is $2.02 x 10^{-28}$, which is less than 0.05 and the confidence interval does not include the value zero, which is the null hypothesis. 
-
-```{r t test hosp}
-t.test(fl$`%UNWEIGHTED ILI`~fl$afterCovid,var.equal=FALSE)
-```
 
 The results of the two linear models indeed support our initial hypothesis that the number of influenza infection is highly related to the COVID-19 restrictions. 
 
