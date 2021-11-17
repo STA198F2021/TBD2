@@ -297,7 +297,6 @@ lmodel%>%
 The result of our model shows that the stringency index has negative correlation to the number of deaths due to influenza. This result is statistically significant because the p-value  is 
 $1.2^{10-21}$, which is less than 0.5 and the confidence interval does not include the value zero. Thus, an increase of 1 in the value of stringency index corresponds to an average decrease of 0.23 in the weekly number of deaths due to influenza. When the stringency index is zero, which means no restrictions, the weekly number of deaths due to influenza is 15.38.
 
-<<<<<<< HEAD
 ```{r linear model stringency states chunk 2}
 merged_5_states%>%
   filter(YEAR == 2020)%>%
