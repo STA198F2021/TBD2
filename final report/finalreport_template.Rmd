@@ -136,17 +136,15 @@ t.test(covid_flu_table$total_flu_deaths~covid_flu_table$covidstatus,var.equal=FA
 # t-test for number of Influenza Hospitalizations pre-covid and during covid
 t.test(covid_flu_table$total_flu_patients~covid_flu_table$covidstatus,var.equal=FALSE)
 ```
-<<<<<<< HEAD
 These t-tests confirm the results of the models that the impact of the flu has been different during the pandemic as compared to before. The data was already confirmed to be approximately normal, so the t-test compares the distributions of data before and during the pandemic. The means are clearly much less for both deaths and hospitalizations during the pandemic, although the death difference is greater. The p-values of $2.2x10^{-16}$ and $8.17x10^{-12}$ are both less than .05, and the confidence intervals of 420-576 and 18950-31432 do not include the null hypothesis of 0, confirming the results of the model that there is a statistically significant difference during the pandemic in the impact of the flu.
 
 Our hypothesis is  that the change in number of deaths and hospitalizations due to influenza is highly related to the restrictions enforced as a result of the COVID-19 pandemic. In order to examine this hypothesis, a variable that quantitatively describes the restriction policies imposed during the pandemic was used from the Oxford COVID-19 policy tracker data.This variable is called `Stringency Index` and is calculated as a mean of sub-indices, which describe restriction policies such as school closures, work space closing, cancellation of public events, public and international travel controls and mask and vaccination policy. 
 ''' reference.https://www.bsg.ox.ac.uk/sites/default/files/Calculation%20and%20presentation%20of%20the%20Stringency%20Index.pdf
 ''' 
-=======
+
 
 
 Our hypothesis is  that the change in number of deaths and hospitalizations due to influenza is highly related to the restrictions enforced as a result of the COVID-19 pandemic. In order to examine this hypothesis, a variable that quantitatively describes the restriction policies imposed during the pandemic was used from the Oxford COVID-19 policy tracker data. This variable is called `Stringency Index` and is calculated as a mean of sub-indices, which describe restriction policies such as school closures, work space closing, cancellation of public events, public and international travel controls and mask and vaccination policy ("COVID-19 Government Response Tracker" 2021).
->>>>>>> d24cabc30f89a6a37a36919efdf65d5969870cbf
 
 This Stringency index was calculated on a daily basis. The weekly average indices were used to merge this data with the influenza data. In order to visualize and better understand the relationship between the stringency index and influenza infections, we selected the five US states with the most COVID-19 cases recorded.
 
@@ -227,7 +225,6 @@ labels = c( "Stringency Index", "% Influenza Infections" ))
 The stringency index was zero until COVID-19 restrictions began in the few early months in 2020.
 According to the plots above, the number of deaths due to influenza started to decrease as the stringency index began to increase in early 2020. Once the stringency index has hit a peak, which means a very strict lock-down, the number of influenza infections were relatively low and stable. This implies the existence of a relationship between COVID-19 restrictions and influenza infections. 
 
-<<<<<<< HEAD
 ```{r echo=FALSE, warning=FALSE}
 merged_5_states %>%
   filter(YEAR == 2021) %>%
@@ -259,8 +256,6 @@ geom_smooth(aes(x = WEEK, y = log(Stringency_Index)), color = 'blue')+
   labs(title =' Stringency Index vs Covid Deaths 2021')
 ```
 
-=======
->>>>>>> 5d049f08b897393dfa031f92b3035e06ded2e191
 ```{r}
 merged_5_states%>%
   filter(YEAR == 2020)%>%
@@ -281,7 +276,6 @@ lmodel%>%
 The result of our model shows that the stringency index has negative correlation to the number of deaths due to influenza. This result is statistically significant because the p-value  is 
 $1.2^{10-21}$, which is less than 0.5 and the confidence interval does not include the value zero. Thus, an increase of 1 in the value of stringency index corresponds to an average decrease of 0.23 in the weekly number of deaths due to influenza. When the stringency index is zero, which means no restrictions, the weekly number of deaths due to influenza is 15.38.
 
-<<<<<<< HEAD
 ```{r linear model stringency states chunk 2}
 merged_5_states%>%
   filter(YEAR == 2020)%>%
@@ -291,7 +285,7 @@ merged_5_states%>%
 ```
 
 The results of the linear model indeed support our initial hypothesis that the number of influenza infection is highly related to the COVID-19 restrictions. 
-=======
+
 
 ```{r model patients stringency}
 lmodel<-lm(`%UNWEIGHTED ILI`~`Stringency_Index`, data = merged_5_states)
@@ -301,7 +295,6 @@ lmodel%>%
 A similar linear regression model was fitted using the percentage of influenza infections out of total patients as a response variable. The result also shows that the stringency index has negative correlation to the response variable. This result is statistically significant because the p-value is $2.02 x 10^{-28}$, which is less than 0.05 and the confidence interval does not include the value zero, which is the null hypothesis. 
 
 The results of the two linear models indeed support our initial hypothesis that the number of influenza infection is highly related to the COVID-19 restrictions. 
->>>>>>> 5d049f08b897393dfa031f92b3035e06ded2e191
 
 # Conclusion
 The data demonstrate that the spread of influenza has been affected during the COVID-19 pandemic, and that this difference is explainable by the public health measures put in place to stop COVID-19. Both influenza deaths and influenza hospitalizations were predictable to a statistically significant degree when using linear models by the binary presence of the COVID-19 pandemic, indicating that the flu seasons during COVID were different from previous flu seasons. Additionally, within COVID, influenza deaths and hospitalizations were able to be explained by the explanatory variable of stringency index from Oxford University, a variable which draws on various anti-coronavirus measures to create a general measure of lockdowns, masking policies, and related measures. Each of these linear model terms had p values of less than .05 and confidence intervals which did not include the null hypothesis of 0 difference, indicating statistical significance. Each of the terms also had negative coefficients, the impact of the flu was reduced by being during the coronavirus pandemic and by increased stringency, when compared to normal years or no stringency measures.
