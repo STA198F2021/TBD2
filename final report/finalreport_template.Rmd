@@ -18,7 +18,7 @@ output: pdf_document
 #Flu seasons during the COVID-19 Pandemic vs. past flu seasons
 
 Have flu deaths and hospitalizations changed during the COVID-19 pandemic compared to past years? If so, is this difference statistically significant?
-```{r seasons compare, echo=FALSE, warning=FALSE, show_col_types = FALSE}
+```{r seasons compare, echo=FALSE, warning=FALSE}
 #data/libraries
 library(dplyr)
 library(tidyverse)
